@@ -17,6 +17,17 @@
 		<module>thirdpartydemo-web</module>
 	</modules>
 
+	<repositories>
+		<repository>
+			<id>my.mvn.repo</id>
+			<url>https://github.com/sunjiesh/mvn-repo/raw/master</url>
+			<!-- use snapshot version -->
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
