@@ -17,7 +17,7 @@
     <!-- 采用注释的方式配置bean -->
     <context:annotation-config />
     <!-- 配置要扫描的包 -->
-    <context:component-scan base-package="cn.com.sunjiesh.wechat"></context:component-scan>
+    <context:component-scan base-package="cn.com.sunjiesh.thirdpartdemo"></context:component-scan>
 	
 
     <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">

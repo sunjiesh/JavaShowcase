@@ -23,6 +23,10 @@
         </servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>rest</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
