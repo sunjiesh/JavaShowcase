@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cn.com.sunjiesh</groupId>
 		<artifactId>project-parent</artifactId>
-		<version>0.2</version>
+		<version>0.2.1</version>
 		<relativePath>../../project-parent</relativePath>
 	</parent>
 	<artifactId>thirdpartydemo</artifactId>
@@ -19,7 +19,10 @@
 
 
 	<dependencies>
-
+		<dependency>
+			<groupId>cn.com.sunjiesh</groupId>
+			<artifactId>utils-thirdparty</artifactId>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
