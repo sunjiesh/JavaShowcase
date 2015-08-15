@@ -34,6 +34,13 @@
 			<groupId>cn.com.sunjiesh</groupId>
 			<artifactId>utils-thirdparty</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>cn.com.sunjiesh</groupId>
+			<artifactId>wechat</artifactId>
+			<version>0.5</version>
+		</dependency>
+		
 	</dependencies>
 
 	<distributionManagement>

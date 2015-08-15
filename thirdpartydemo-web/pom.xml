@@ -89,11 +89,7 @@
 			<artifactId>utils-web</artifactId>
 		</dependency>
 		
-		<dependency>
-			<groupId>cn.com.sunjiesh</groupId>
-			<artifactId>wechat</artifactId>
-			<version>0.5</version>
-		</dependency>
+		
 
 	</dependencies>
 
