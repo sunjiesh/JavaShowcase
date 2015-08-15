@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.com.sunjiesh.utils.web.SpringBaseController;
-import cn.com.sunjiesh.wechat.entity.TemplateMessage;
-import cn.com.sunjiesh.wechat.entity.TemplateMessageData;
 import cn.com.sunjiesh.wechat.entity.User;
+import cn.com.sunjiesh.wechat.entity.message.WechatSendTemplateMessage;
+import cn.com.sunjiesh.wechat.entity.message.WechatSendTemplateMessageData;
 import cn.com.sunjiesh.wechat.service.TemplateMessageService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
@@ -32,11 +32,11 @@ public class WechatMessageController extends SpringBaseController{
 	public void messageSend(HttpServletResponse response){
 		User user=new User();
 		user.setOpenId("oiY-ExHTPPJ2bBs2VJl1L4cM35Ig");
-		TemplateMessage message=new TemplateMessage();
+		WechatSendTemplateMessage message=new WechatSendTemplateMessage();
 		message.setTemplateId("C88oa-jbT7K6hlDmGwUnJztSSrSCt1yWOdAtWChOEoo");
 		message.setUrl("http://www.baidu.com");
 		message.setTopColor("#FF0000");
-		TemplateMessageData messageData1=new TemplateMessageData();
+		WechatSendTemplateMessageData messageData1=new WechatSendTemplateMessageData();
 		messageData1.setKeyName("参数1");
 		messageData1.setValue("ca");
 		messageData1.setColor("#173177");

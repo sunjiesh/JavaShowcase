@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>thirdpartydemo</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1</version>
+	<version>0.2</version>
 	<name>thirdpartydemo</name>
 	<url>http://maven.apache.org</url>
 
@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>cn.com.sunjiesh</groupId>
 			<artifactId>wechat</artifactId>
-			<version>0.7</version>
+			<version>0.8</version>
 		</dependency>
 		
 	</dependencies>
