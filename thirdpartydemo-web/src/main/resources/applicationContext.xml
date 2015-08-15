@@ -9,5 +9,5 @@
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
 	default-autowire="byName">
 	
-	<bean id="messageReceiveProcessService" class="cn.com.sunjiesh.thirdpartdemo.service.MessageReceiveProcessServiceImpl"></bean>
+	<bean id="messageReceiveProcessService" class="cn.com.sunjiesh.wechat.service.MessageReceiveProcessServiceImpl"></bean>
 </beans>
