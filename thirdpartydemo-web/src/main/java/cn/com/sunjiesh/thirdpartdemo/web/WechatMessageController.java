@@ -26,8 +26,6 @@ public class WechatMessageController extends SpringBaseController{
 	@Autowired
 	private TemplateMessageService templateMessageService;
 	
-	private String token="ns8DDRMN7022vOeeKhMCAw1-I9VkOCO9J3AqI_-9lyxB3sbWRxTbeZnSywbmV4pU7TTSH1SwZTjo5D15G54Br6fydrGOv1Q_GYAhOMAKFkM";
-	
 	@RequestMapping(value = "/messageSend.do", method = RequestMethod.GET)
 	public void messageSend(HttpServletResponse response){
 		User user=new User();
@@ -43,7 +41,7 @@ public class WechatMessageController extends SpringBaseController{
 		message.getData().add(messageData1);
 		String result="";
 		try {
-			result=templateMessageService.send(user, message, token);
+			result=templateMessageService.send(user, message);
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		}
