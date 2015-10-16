@@ -14,7 +14,7 @@
     <context:component-scan base-package="cn.com.sunjiesh.thirdpartdemo"></context:component-scan>
     <context:component-scan base-package="cn.com.sunjiesh.wechat"></context:component-scan>
     <bean id="messageReceiveService" class="cn.com.sunjiesh.thirdpartdemo.service.CustomMessageReceiveService"></bean>
-	<bean id="messageReceiveProcessService" class="cn.com.sunjiesh.wechat.service.MessageReceiveProcessServiceImpl">
+	<bean id="messageReceiveProcessService" class="cn.com.sunjiesh.wechat.service.CustomerWechatMessageReceiveProcessServiceImpl">
 		<property name="mediaService" ref="mediaService"></property>
 		<property name="templateMessageService" ref="templateMessageService"></property>
 		<property name="userService" ref="userService"></property>
