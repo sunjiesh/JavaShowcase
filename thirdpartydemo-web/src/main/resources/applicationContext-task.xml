@@ -9,6 +9,7 @@
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
 	default-autowire="byName">
 	
+	
 	<bean name="wechatAccessTokenJob" 	class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
 		<property name="jobClass" value="cn.com.sunjiesh.thirdpartdemo.service.WechatAccessTokenJob" />
 		<property name="jobDataMap">
@@ -22,7 +23,7 @@
 	<!-- Run the job every 2 hours with initial delay of 60 second -->
 	<bean id="wechatAccessTokenTrigger"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 		<property name="jobDetail" ref="wechatAccessTokenJob" />
-		<property name="startDelay" value="60000" />
+		<property name="startDelay" value="10000" />
 		<property name="repeatInterval" value="7200000" />
 	</bean>
 	

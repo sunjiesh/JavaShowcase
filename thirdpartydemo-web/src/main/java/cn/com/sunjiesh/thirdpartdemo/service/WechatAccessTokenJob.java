@@ -23,12 +23,14 @@ public class WechatAccessTokenJob extends QuartzJobBean{
 	@Override
 	protected void executeInternal(JobExecutionContext arg0)
 			throws JobExecutionException {
+		String accessToken = null;
 		try {
-			String accessToken=accessTokenService.getAccessTokenAndSaveToNosql();
-			logger.debug("accessToken="+accessToken);
+			accessToken = accessTokenService.getAccessTokenAndSaveToLocal();
 		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		logger.debug("accessToken="+accessToken);
 	}
 
 	public void setAccessTokenService(AccessTokenService accessTokenService) {

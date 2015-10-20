@@ -13,7 +13,26 @@
     <!-- 配置要扫描的包 -->
     <context:component-scan base-package="cn.com.sunjiesh.thirdpartdemo"></context:component-scan>
     <context:component-scan base-package="cn.com.sunjiesh.wechat"></context:component-scan>
-    <bean id="messageReceiveService" class="cn.com.sunjiesh.thirdpartdemo.service.CustomMessageReceiveService"></bean>
+    
+    <bean id="mediaService" class="cn.com.sunjiesh.wechat.service.MediaService">
+    	<property name="wechatAccessTokenDao" ref="redisWechatAccessTokenDao"/>
+    </bean>
+    <bean id="accessTokenService" class="cn.com.sunjiesh.wechat.service.AccessTokenService">
+    	<property name="wechatAccessTokenDao" ref="redisWechatAccessTokenDao"/>
+	</bean>
+    <bean id="wechatValidService" class="cn.com.sunjiesh.wechat.service.WechatValidService">
+    	<property name="wechatAccessTokenDao" ref="redisWechatAccessTokenDao"/>
+    </bean>
+    <bean id="templateMessageService" class="cn.com.sunjiesh.wechat.service.TemplateMessageService">
+    	<property name="wechatAccessTokenDao" ref="redisWechatAccessTokenDao"></property>
+    </bean>
+    <bean id="userService" class="cn.com.sunjiesh.wechat.service.UserService">
+    	<property name="wechatAccessTokenDao" ref="redisWechatAccessTokenDao"></property>
+    </bean>
+    <bean id="messageReceiveService" class="cn.com.sunjiesh.thirdpartdemo.service.CustomMessageReceiveService">
+		<property name="wechatAccessTokenDao" ref="redisWechatAccessTokenDao"></property>
+    </bean>
+    
 	<bean id="messageReceiveProcessService" class="cn.com.sunjiesh.wechat.service.CustomerWechatMessageReceiveProcessServiceImpl">
 		<property name="mediaService" ref="mediaService"></property>
 		<property name="templateMessageService" ref="templateMessageService"></property>
