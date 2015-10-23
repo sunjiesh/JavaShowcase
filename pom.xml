@@ -15,6 +15,7 @@
 
 	<modules>
 		<module>thirdpartydemo-web</module>
+		<module>thirdpartydemo-core</module>
 	</modules>
 
 	<repositories>
