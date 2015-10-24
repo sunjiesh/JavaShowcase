@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cn.com.sunjiesh</groupId>
 		<artifactId>project-parent</artifactId>
-		<version>0.2.3</version>
+		<version>0.2.7</version>
 		<relativePath>../../project-parent</relativePath>
 	</parent>
 	<artifactId>thirdpartydemo</artifactId>
