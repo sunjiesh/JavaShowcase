@@ -8,4 +8,6 @@
   <artifactId>thirdpartydemo-core</artifactId>
   <name>thirdpartydemo-core</name>
   <description>thirdpartydemo-core</description>
+  <packaging>jar</packaging>
+  
 </project>
