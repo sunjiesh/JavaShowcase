@@ -14,7 +14,7 @@
 		<property name="jobClass" value="cn.com.sunjiesh.thirdpartdemo.service.WechatAccessTokenJob" />
 		<property name="jobDataMap">
 			<map>
-				<entry key="accessTokenService" value-ref="accessTokenService" />
+				<entry key="accessTokenService" value-ref="wechatAccessTokenService"></entry>
 			</map>
 		</property>
 		<property name="durability" value="true" />
