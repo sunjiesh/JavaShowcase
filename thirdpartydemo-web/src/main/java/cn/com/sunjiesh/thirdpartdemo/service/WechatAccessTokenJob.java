@@ -6,37 +6,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import cn.com.sunjiesh.wechat.service.AccessTokenService;
+import cn.com.sunjiesh.wechat.service.WechatAccessTokenService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
 /**
  * 微信任务服务
+ * 
  * @author tomsun
  *
  */
-public class WechatAccessTokenJob extends QuartzJobBean{
+public class WechatAccessTokenJob extends QuartzJobBean {
 
-	private static Logger logger=LoggerFactory.getLogger(WechatAccessTokenJob.class);
-	
-	private AccessTokenService accessTokenService;
-	
+	private static Logger LOGGER = LoggerFactory.getLogger(WechatAccessTokenJob.class);
+
+	private WechatAccessTokenService accessTokenService;
+
 	@Override
-	protected void executeInternal(JobExecutionContext arg0)
-			throws JobExecutionException {
+	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		String accessToken = null;
 		try {
 			accessToken = accessTokenService.getAccessTokenAndSaveToLocal();
 		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.debug("accessToken="+accessToken);
+		LOGGER.debug("accessToken=" + accessToken);
 	}
 
-	public void setAccessTokenService(AccessTokenService accessTokenService) {
+	public void setAccessTokenService(WechatAccessTokenService accessTokenService) {
 		this.accessTokenService = accessTokenService;
 	}
-	
-	
 
+	
 }

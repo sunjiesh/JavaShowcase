@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.qq.weixin.mp.aes.AesException;
 
 import cn.com.sunjiesh.utils.web.SpringBaseController;
-import cn.com.sunjiesh.wechat.service.MessageReceiveService;
+import cn.com.sunjiesh.wechat.service.WechatMessageReceiveService;
 import cn.com.sunjiesh.wechat.service.WechatValidService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
@@ -35,7 +35,7 @@ public class WechatController extends SpringBaseController{
 	private static final Logger LOGGER = LoggerFactory.getLogger(WechatController.class);
 
 	@Autowired
-	private MessageReceiveService messageReceiveService;
+	private WechatMessageReceiveService messageReceiveService;
 	
 	@Autowired
 	private WechatValidService wechatValidService;

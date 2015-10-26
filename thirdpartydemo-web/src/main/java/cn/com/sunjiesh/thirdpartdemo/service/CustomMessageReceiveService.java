@@ -5,11 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import cn.com.sunjiesh.wechat.service.MessageReceiveService;
+import cn.com.sunjiesh.wechat.service.WechatMessageReceiveService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
-@Service
-public class CustomMessageReceiveService extends MessageReceiveService{
+public class CustomMessageReceiveService extends WechatMessageReceiveService{
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(CustomMessageReceiveService.class);
 

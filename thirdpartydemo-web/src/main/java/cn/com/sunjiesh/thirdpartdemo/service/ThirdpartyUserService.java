@@ -10,7 +10,7 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
 @Service
 @Transactional(rollbackFor={ServiceException.class,Exception.class})
-public class WechatUserService {
+public class ThirdpartyUserService {
 	
 	@Autowired
 	private WechatUserMapper wechatUserMapper;

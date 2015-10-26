@@ -13,10 +13,10 @@ import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 @Test
 @ContextConfiguration(locations={"/applicationContext.xml","/applicationContext-persistment.xml"}) 
 @Transactional 
-public class WechatUserServiceTest extends AbstractTestNGSpringContextTests {
+public class ThirdpartyUserServiceTest extends AbstractTestNGSpringContextTests {
 
 	@Autowired
-	private WechatUserService wechatUserService;
+	private ThirdpartyUserService wechatUserService;
 	
 	public void testSave(){
 		WechatUser wechatUser=new WechatUser();
