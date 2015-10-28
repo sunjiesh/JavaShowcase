@@ -5,13 +5,16 @@
 		<groupId>cn.com.sunjiesh</groupId>
 		<artifactId>project-parent</artifactId>
 		<version>0.2.7</version>
-		<relativePath>../../project-parent</relativePath>
 	</parent>
 	<artifactId>thirdpartydemo</artifactId>
 	<packaging>pom</packaging>
 	<version>0.2</version>
 	<name>thirdpartydemo</name>
 	<url>http://maven.apache.org</url>
+	
+	<properties>
+		<wechat.version>0.8.2</wechat.version>
+	</properties>
 
 	<modules>
 		<module>thirdpartydemo-web</module>
@@ -39,7 +42,7 @@
 		<dependency>
 			<groupId>cn.com.sunjiesh</groupId>
 			<artifactId>wechat</artifactId>
-			<version>0.8.2</version>
+			<version>${wechat.version}</version>
 		</dependency>
 		
 		<dependency>
