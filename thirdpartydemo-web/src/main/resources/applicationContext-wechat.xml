@@ -13,8 +13,8 @@
     </bean>
     
 	<bean id="messageReceiveProcessService" class="cn.com.sunjiesh.thirdpartdemo.service.CustomerWechatMessageReceiveProcessServiceImpl">
-		<property name="mediaService" ref="mediaService"></property>
-		<property name="templateMessageService" ref="templateMessageService"></property>
-		<property name="userService" ref="userService"></property>
+		<property name="mediaService" ref="wechatMediaService"></property>
+		<property name="templateMessageService" ref="wechatTemplateMessageService"></property>
+		<property name="userService" ref="wechatUserService"></property>
 	</bean>
 </beans>
