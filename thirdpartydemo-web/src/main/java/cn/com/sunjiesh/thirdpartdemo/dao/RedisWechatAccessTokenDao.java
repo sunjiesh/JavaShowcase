@@ -13,7 +13,7 @@ import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
  * @author tom
  *
  */
-@Repository
+@Repository("wechatAccessTokenDao")
 public class RedisWechatAccessTokenDao implements IWechatAccessTokenDao{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(RedisWechatAccessTokenDao.class);

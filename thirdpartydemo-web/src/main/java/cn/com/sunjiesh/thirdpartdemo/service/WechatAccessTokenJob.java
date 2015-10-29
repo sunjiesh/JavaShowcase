@@ -4,7 +4,10 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import cn.com.sunjiesh.wechat.service.WechatAccessTokenService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
@@ -15,14 +18,15 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
  * @author tomsun
  *
  */
-public class WechatAccessTokenJob extends QuartzJobBean {
+@Service
+public class WechatAccessTokenJob{
 
 	private static Logger LOGGER = LoggerFactory.getLogger(WechatAccessTokenJob.class);
 
+	@Autowired
 	private WechatAccessTokenService accessTokenService;
 
-	@Override
-	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+	public void getAccessTokenAndSaveToLocal(){
 		String accessToken = null;
 		try {
 			accessToken = accessTokenService.getAccessTokenAndSaveToLocal();
@@ -31,7 +35,7 @@ public class WechatAccessTokenJob extends QuartzJobBean {
 		}
 		LOGGER.debug("accessToken=" + accessToken);
 	}
-
+	
 	public void setAccessTokenService(WechatAccessTokenService accessTokenService) {
 		this.accessTokenService = accessTokenService;
 	}
