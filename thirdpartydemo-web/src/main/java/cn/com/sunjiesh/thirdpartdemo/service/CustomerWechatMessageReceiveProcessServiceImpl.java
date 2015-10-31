@@ -48,6 +48,12 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
 	@Override
 	public Document messageRecive(WechatReceiveEventUnSubscribeMessage wechatMessage) throws ServiceException {
 		Document document=super.messageRecive(wechatMessage);
+		//查詢OpenId並創建用戶對象
+		String wechatOpenId=wechatMessage.getFromUserName();
+		WechatUser wechatUser=new WechatUser();
+		wechatUser.setOpenId(wechatOpenId);
+		thirdpartyUserService.delete(wechatUser);
+		
 		return document;
 	}
 
