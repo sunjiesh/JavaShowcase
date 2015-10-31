@@ -14,5 +14,7 @@
 		<property name="mediaService" ref="wechatMediaService"></property>
 		<property name="templateMessageService" ref="wechatTemplateMessageService"></property>
 		<property name="userService" ref="wechatUserService"></property>
+		<property name="thirdpartyUserService" ref="thirdpartyUserService"></property>
+		<property name="wechatUserService" ref="wechatUserService"></property>
 	</bean>
 </beans>

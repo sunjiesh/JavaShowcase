@@ -3,7 +3,6 @@ package cn.com.sunjiesh.thirdpartdemo.service;
 import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import cn.com.sunjiesh.wechat.service.WechatMessageReceiveService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
