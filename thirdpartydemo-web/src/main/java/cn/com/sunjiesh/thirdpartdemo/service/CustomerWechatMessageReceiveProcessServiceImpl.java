@@ -1,12 +1,14 @@
 package cn.com.sunjiesh.thirdpartdemo.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.com.sunjiesh.thirdpartdemo.common.ThirdpartyDemoConstants;
 import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
@@ -17,6 +19,8 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
 public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessageReceiveProcessServiceImpl{
 	
+	
+
 	private Logger LOGGER=LoggerFactory.getLogger(CustomerWechatMessageReceiveProcessServiceImpl.class);
 
 	private ThirdpartyUserService thirdpartyUserService;
@@ -39,6 +43,10 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			LOGGER.error("Convert WechatUserDto To WechatUser Error",e);
 		}
+		wechatUser.setCreateTime(new Date());
+		wechatUser.setCreateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
+		wechatUser.setUpdateTime(new Date());
+		wechatUser.setUpdateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
 		thirdpartyUserService.save(wechatUser);
 		
 		Document document=super.messageRecive(wechatMessage);
