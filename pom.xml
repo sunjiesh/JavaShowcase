@@ -13,6 +13,7 @@
 	<url>http://maven.apache.org</url>
 	
 	<properties>
+		<utils.version>0.4.3</utils.version>
 		<wechat.version>0.8.2</wechat.version>
 	</properties>
 
@@ -37,6 +38,16 @@
 		<dependency>
 			<groupId>cn.com.sunjiesh</groupId>
 			<artifactId>utils-thirdparty</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>cn.com.sunjiesh</groupId>
+			<artifactId>utils-web</artifactId>
+			<version>${utils.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.com.sunjiesh</groupId>
+			<artifactId>utils-common</artifactId>
+			<version>${utils.version}</version>
 		</dependency>
 		
 		<dependency>

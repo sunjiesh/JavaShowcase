@@ -5,14 +5,12 @@
 		<groupId>cn.com.sunjiesh</groupId>
 		<artifactId>thirdpartydemo</artifactId>
 		<version>0.2</version>
-		<relativePath>../</relativePath>
 	</parent>
 	<artifactId>thirdpartydemo-web</artifactId>
 	<packaging>war</packaging>
 	<name>thirdpartydemo-web</name>
 
 	<properties>
-		<utils.version>0.4.3</utils.version>
 		<spring-security-version>4.0.2.RELEASE</spring-security-version>
 	</properties>
 
@@ -121,16 +119,7 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>cn.com.sunjiesh</groupId>
-			<artifactId>utils-web</artifactId>
-			<version>${utils.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cn.com.sunjiesh</groupId>
-			<artifactId>utils-common</artifactId>
-			<version>${utils.version}</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>cn.com.sunjiesh</groupId>
 			<artifactId>thirdpartydemo-core</artifactId>
