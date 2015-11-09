@@ -9,3 +9,5 @@ buildNumber.properties
 .settings/
 .project
 .classpath
+/thirdpartydemo-web/src/test/resources/tuling123.properties
+/thirdpartydemo-web/src/main/resources/tuling123.properties
