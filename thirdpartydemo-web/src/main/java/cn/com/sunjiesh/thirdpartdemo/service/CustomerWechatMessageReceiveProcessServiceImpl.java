@@ -22,7 +22,7 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
 public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessageReceiveProcessServiceImpl {
 
-    private Logger LOGGER = LoggerFactory.getLogger(CustomerWechatMessageReceiveProcessServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerWechatMessageReceiveProcessServiceImpl.class);
 
     private ThirdpartyUserService thirdpartyUserService;
 
@@ -68,6 +68,8 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
 
     @Override
     public Document messageRecive(WechatReceiveNormalTextMessage wechatMessage) throws ServiceException {
+        LOGGER.debug("receive a WechatReceiveNormalTextMessage request ");
+        
         LOGGER.debug("receive a messageRecive request ");
         String toUserName = wechatMessage.getFromUserName();
         String fromUserName = wechatMessage.getToUserName();
