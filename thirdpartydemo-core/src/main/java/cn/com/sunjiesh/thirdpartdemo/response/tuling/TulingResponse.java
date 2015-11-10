@@ -12,7 +12,7 @@ package cn.com.sunjiesh.thirdpartdemo.response.tuling;
 public class TulingResponse {
     
     /**
-     * 文字类标识码
+     * 标识码
      */
     private Integer code;
     
@@ -20,6 +20,19 @@ public class TulingResponse {
      * 结果
      */
     private String text;
+    
+    /**
+     * 链接地址
+     */
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public Integer getCode() {
         return code;
