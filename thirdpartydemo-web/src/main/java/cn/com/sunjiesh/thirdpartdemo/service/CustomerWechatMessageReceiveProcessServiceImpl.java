@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.com.sunjiesh.thirdpartdemo.common.ThirdpartyDemoConstants;
+import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingConstants;
 import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingHelper;
 import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
@@ -85,11 +86,11 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
             TulingResponse response = new TulingHelper().callTuling(message);
             int tulingCode = response.getCode();
             switch (tulingCode) {
-                case 100000:{
-                    String replayMessage=response.getText();
-                    return replayTextMessage(toUserName, fromUserName,replayMessage);
-                }
-                    
+                case TulingConstants.TULING_RESPONSE_CODE_TEXT:
+                    return replayTextMessage(toUserName, fromUserName,response.getText());
+                case TulingConstants.TULING_RESPONSE_CODE_LINK:
+                    //TODO 調用發送模板消息
+                    return replayTextMessage(toUserName, fromUserName,response.getText()+response.getUrl());
                 default: 
                     return replayErrorTextMessage(toUserName, fromUserName, message);
             }
@@ -111,7 +112,7 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
                 TulingResponse response = new TulingHelper().callTuling(message);
                 int tulingCode = response.getCode();
                 switch (tulingCode) {
-                    case 100000:
+                    case TulingConstants.TULING_RESPONSE_CODE_TEXT:
                         return replayTextMessage(toUserName, fromUserName);
                     default: 
                         return replayErrorTextMessage(toUserName, fromUserName, message);
@@ -120,6 +121,7 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
         }
 
     }
+    
 
     public ThirdpartyUserService getThirdpartyUserService() {
         return thirdpartyUserService;
