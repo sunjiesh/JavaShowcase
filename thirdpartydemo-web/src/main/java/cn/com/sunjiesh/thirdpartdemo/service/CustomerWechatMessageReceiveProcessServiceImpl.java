@@ -82,7 +82,17 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
             }
         }
         if (!continueReplay) {
-            return replayErrorTextMessage(toUserName, fromUserName, message);
+            TulingResponse response = new TulingHelper().callTuling(message);
+            int tulingCode = response.getCode();
+            switch (tulingCode) {
+                case 100000:{
+                    String replayMessage=response.getText();
+                    return replayTextMessage(toUserName, fromUserName,replayMessage);
+                }
+                    
+                default: 
+                    return replayErrorTextMessage(toUserName, fromUserName, message);
+            }
         }
         switch (TextMessageReceiveContentEnum.valueOf(message.toUpperCase())) {
             case TEXT:
