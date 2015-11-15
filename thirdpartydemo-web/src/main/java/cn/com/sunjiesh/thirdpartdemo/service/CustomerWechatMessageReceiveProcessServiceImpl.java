@@ -13,10 +13,10 @@ import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingConstants;
 import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingHelper;
 import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
-import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalTextMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
 import cn.com.sunjiesh.wechat.model.dto.user.WechatUserDto;
+import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.service.WechatMessageReceiveProcessServiceImpl;
 import cn.com.sunjiesh.wechat.service.WechatUserService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
@@ -68,7 +68,7 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
     }
 
     @Override
-    public Document messageRecive(WechatReceiveNormalTextMessage wechatMessage) throws ServiceException {
+    public Document messageRecive(WechatNormalTextMessageRequest wechatMessage) throws ServiceException {
         LOGGER.debug("receive a WechatReceiveNormalTextMessage request ");
         
         LOGGER.debug("receive a messageRecive request ");
