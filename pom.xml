@@ -14,7 +14,7 @@
 	
 	<properties>
 		<utils.version>0.4.3</utils.version>
-		<wechat.version>0.8.2</wechat.version>
+		<wechat.version>0.8.4</wechat.version>
 	</properties>
 
 	<modules>
