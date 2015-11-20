@@ -20,14 +20,12 @@ import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
 import cn.com.sunjiesh.wechat.model.dto.user.WechatUserDto;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.media.WechatUploadMediaResponse;
-import cn.com.sunjiesh.wechat.service.WechatMediaService;
 import cn.com.sunjiesh.wechat.service.WechatMessageReceiveProcessServiceImpl;
 import cn.com.sunjiesh.wechat.service.WechatUserService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
 
 public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessageReceiveProcessServiceImpl {
 
@@ -37,8 +35,7 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
 
     private WechatUserService wechatUserService;
 
-    private WechatMediaService wechatMediaService;
-
+ 
     private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
 
     @Override
@@ -113,7 +110,7 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
                                 String fileType = fileName.substring(fileName.lastIndexOf(".") + 1);
                                 if (fileType.contains("jpg") || fileType.contains("jpeg") || fileType.contains("png")) {
                                     //僅支持的圖片類型
-                                    WechatUploadMediaResponse uploadMediaResponse = WechatMediaHandler.uploadMedia(tmpFile, "image", wechatMediaService.getAccessTokenFromLocal());
+                                    WechatUploadMediaResponse uploadMediaResponse = WechatMediaHandler.uploadMedia(tmpFile, "image", wechatUserService.getAccessTokenFromLocal());
                                     String mediaId = uploadMediaResponse.getMediaId();
                                     LOGGER.debug("微信臨時圖片素材上傳成功，mediaId=" + mediaId);
                                 }
@@ -133,13 +130,13 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
             case TEXT:
                 return replayTextMessage(toUserName, fromUserName);
             case IMAGE:
-                return replayImageMessage(toUserName, fromUserName);
+                return replayImageMessage(toUserName, fromUserName,wechatUserService.getAccessTokenFromLocal());
             case VOICE:
-                return replayVoiceMessage(toUserName, fromUserName);
+                return replayVoiceMessage(toUserName, fromUserName,wechatUserService.getAccessTokenFromLocal());
             case VIDEO:
-                return replayVideoMessage(toUserName, fromUserName);
+                return replayVideoMessage(toUserName, fromUserName,wechatUserService.getAccessTokenFromLocal());
             case MUSIC:
-                return replayMusicMessage(toUserName, fromUserName);
+                return replayMusicMessage(toUserName, fromUserName,wechatUserService.getAccessTokenFromLocal());
             case NEWS:
                 return replayMultiNewsMessage(toUserName, fromUserName);
             default: {
@@ -172,11 +169,4 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
         this.wechatUserService = wechatUserService;
     }
 
-    public WechatMediaService getWechatMediaService() {
-        return wechatMediaService;
-    }
-
-    public void setWechatMediaService(WechatMediaService wechatMediaService) {
-        this.wechatMediaService = wechatMediaService;
-    }
 }
