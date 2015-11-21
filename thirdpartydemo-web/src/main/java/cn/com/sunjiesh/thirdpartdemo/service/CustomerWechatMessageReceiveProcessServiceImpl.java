@@ -17,7 +17,7 @@ import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
 import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
-import cn.com.sunjiesh.wechat.model.dto.user.WechatUserDto;
+import cn.com.sunjiesh.wechat.model.user.WechatUserDto;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.media.WechatUploadMediaResponse;
 import cn.com.sunjiesh.wechat.service.WechatMessageReceiveProcessServiceImpl;
