@@ -14,14 +14,15 @@ import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingHelper;
 import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
+import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
 import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
+import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
 import cn.com.sunjiesh.wechat.model.user.WechatUserDto;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.media.WechatUploadMediaResponse;
 import cn.com.sunjiesh.wechat.service.WechatMessageReceiveProcessServiceImpl;
-import cn.com.sunjiesh.wechat.service.WechatUserService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 import java.io.File;
 import java.util.concurrent.Executors;
@@ -33,9 +34,8 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
 
     private ThirdpartyUserService thirdpartyUserService;
 
-    private WechatUserService wechatUserService;
+    protected IWechatAccessTokenDao wechatAccessTokenDao;
 
- 
     private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
 
     @Override
@@ -45,7 +45,7 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
         String wechatOpenId = wechatMessage.getFromUserName();
         WechatUserDto wechatUserDto = new WechatUserDto();
         wechatUserDto.setOpenId(wechatOpenId);
-        wechatUserDto = wechatUserService.getUserInfo(wechatUserDto);
+        wechatUserDto = WechatUserHandler.getUserInfo(wechatUserDto, wechatAccessTokenDao.get());
 
         //封装WechatUser对象，插入數據到客戶端
         WechatUser wechatUser = new WechatUser();
@@ -110,17 +110,17 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
                                 String fileType = fileName.substring(fileName.lastIndexOf(".") + 1);
                                 if (fileType.contains("jpg") || fileType.contains("jpeg") || fileType.contains("png")) {
                                     //僅支持的圖片類型
-                                    WechatUploadMediaResponse uploadMediaResponse = WechatMediaHandler.uploadMedia(tmpFile, "image", wechatUserService.getAccessTokenFromLocal());
+                                    WechatUploadMediaResponse uploadMediaResponse = WechatMediaHandler.uploadMedia(tmpFile, "image", wechatAccessTokenDao.get());
                                     String mediaId = uploadMediaResponse.getMediaId();
                                     LOGGER.debug("微信臨時圖片素材上傳成功，mediaId=" + mediaId);
                                 }
 
                             }
                         } catch (ServiceException ex) {
-                            LOGGER.error("Server Error",ex);
+                            LOGGER.error("Server Error", ex);
                         }
                     });
-              
+
                     return replayTextMessage(toUserName, fromUserName, response.getText() + response.getUrl());
                 default:
                     return replayErrorTextMessage(toUserName, fromUserName, message);
@@ -130,13 +130,13 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
             case TEXT:
                 return replayTextMessage(toUserName, fromUserName);
             case IMAGE:
-                return replayImageMessage(toUserName, fromUserName,wechatUserService.getAccessTokenFromLocal());
+                return replayImageMessage(toUserName, fromUserName, wechatAccessTokenDao.get());
             case VOICE:
-                return replayVoiceMessage(toUserName, fromUserName,wechatUserService.getAccessTokenFromLocal());
+                return replayVoiceMessage(toUserName, fromUserName, wechatAccessTokenDao.get());
             case VIDEO:
-                return replayVideoMessage(toUserName, fromUserName,wechatUserService.getAccessTokenFromLocal());
+                return replayVideoMessage(toUserName, fromUserName, wechatAccessTokenDao.get());
             case MUSIC:
-                return replayMusicMessage(toUserName, fromUserName,wechatUserService.getAccessTokenFromLocal());
+                return replayMusicMessage(toUserName, fromUserName, wechatAccessTokenDao.get());
             case NEWS:
                 return replayMultiNewsMessage(toUserName, fromUserName);
             default: {
@@ -161,12 +161,12 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
         this.thirdpartyUserService = thirdpartyUserService;
     }
 
-    public WechatUserService getWechatUserService() {
-        return wechatUserService;
+    public IWechatAccessTokenDao getWechatAccessTokenDao() {
+        return wechatAccessTokenDao;
     }
 
-    public void setWechatUserService(WechatUserService wechatUserService) {
-        this.wechatUserService = wechatUserService;
+    public void setWechatAccessTokenDao(IWechatAccessTokenDao wechatAccessTokenDao) {
+        this.wechatAccessTokenDao = wechatAccessTokenDao;
     }
 
 }
