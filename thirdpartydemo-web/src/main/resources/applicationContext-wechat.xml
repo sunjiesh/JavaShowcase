@@ -11,8 +11,7 @@
     <bean id="messageReceiveService" class="cn.com.sunjiesh.thirdpartdemo.service.CustomMessageReceiveService"></bean>
     
 	<bean id="messageReceiveProcessService" class="cn.com.sunjiesh.thirdpartdemo.service.CustomerWechatMessageReceiveProcessServiceImpl">
-		<property name="userService" ref="wechatUserService"></property>
 		<property name="thirdpartyUserService" ref="thirdpartyUserService"></property>
-		<property name="wechatUserService" ref="wechatUserService"></property>
+		<property name="wechatAccessTokenDao" ref="wechatAccessTokenDao"/>
 	</bean>
 </beans>
