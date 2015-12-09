@@ -12,3 +12,5 @@ buildNumber.properties
 /thirdpartydemo-web/src/test/resources/tuling123.properties
 /thirdpartydemo-web/src/main/resources/tuling123.properties
 /thirdpartydemo-web/nbactions.xml
+.idea/
+.iml
