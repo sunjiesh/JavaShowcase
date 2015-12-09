@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.com.sunjiesh.thirdpartdemo.service.CustomMessageReceiveService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class WechatController extends SpringBaseController{
 	private static final Logger LOGGER = LoggerFactory.getLogger(WechatController.class);
 
 	@Autowired
-	private WechatMessageReceiveService messageReceiveService;
+	private CustomMessageReceiveService messageReceiveService;
 	
 	@Autowired
 	private WechatValidService wechatValidService;
