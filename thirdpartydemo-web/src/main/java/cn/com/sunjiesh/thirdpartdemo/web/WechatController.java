@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import cn.com.sunjiesh.thirdpartdemo.service.CustomMessageReceiveService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.qq.weixin.mp.aes.AesException;
 
+import cn.com.sunjiesh.thirdpartdemo.service.CustomMessageReceiveService;
 import cn.com.sunjiesh.utils.web.SpringBaseController;
-import cn.com.sunjiesh.wechat.service.WechatMessageReceiveService;
-import cn.com.sunjiesh.wechat.service.WechatValidService;
+import cn.com.sunjiesh.wechat.handler.WechatValidHandler;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
 /**
@@ -37,10 +36,6 @@ public class WechatController extends SpringBaseController{
 
 	@Autowired
 	private CustomMessageReceiveService messageReceiveService;
-	
-	@Autowired
-	private WechatValidService wechatValidService;
-	
 
 	/**
 	 * 微信服务GET请求
@@ -59,7 +54,7 @@ public class WechatController extends SpringBaseController{
 		String echoStr = request.getParameter("echostr");
 		String nonce = request.getParameter("nonce");
 		String signature = request.getParameter("signature");
-		String responseStr = wechatValidService.valid(timestamp, echoStr, nonce, signature);
+		String responseStr = WechatValidHandler.valid(timestamp, echoStr, nonce, signature);
 		super.responseText(response, responseStr);
 
 	}
