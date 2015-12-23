@@ -1,5 +1,6 @@
 package cn.com.sunjiesh.thirdpartdemo.service;
 
+import cn.com.sunjiesh.thirdpartdemo.common.WechatEventClickMessageEventkeyEnum;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalImageMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLinkMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLocationMessage;
@@ -17,7 +18,9 @@ import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventScancodeCom
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventViewMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessage;
+import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
+import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayTextMessageResponse;
 import cn.com.sunjiesh.wechat.service.AbstractWechatMessageReceiveService;
 import cn.com.sunjiesh.wechat.service.IWechatMessageReceiveProcessService;
 import org.dom4j.Document;
@@ -89,7 +92,20 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
     @Override
     protected Document messageRecive(WechatReceiveEventClickMessage clickMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	Document respDoc=null;
+    	String eventKey=clickMessage.getEventKey();
+    	LOGGER.debug("EventKey="+eventKey);
+    	WechatEventClickMessageEventkeyEnum eventKeyEnum=WechatEventClickMessageEventkeyEnum.valueOf(eventKey);
+    	switch(eventKeyEnum){
+    	case GetTextMessage:{
+    		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(clickMessage.getFromUserName(), clickMessage.getToUserName(), "text");
+    		textMessageResponse.setContent("Hello,This is a test text message.你好！這是一條測試文本消息");
+    		respDoc=WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+    	};break;
+    	}
+    	
+		return respDoc;
+
     }
 
     @Override
