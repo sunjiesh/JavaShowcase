@@ -20,6 +20,7 @@ import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventViewMessage
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessage;
 import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
+import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayTextMessageResponse;
 import cn.com.sunjiesh.wechat.service.AbstractWechatMessageReceiveService;
 import cn.com.sunjiesh.wechat.service.IWechatMessageReceiveProcessService;
@@ -92,15 +93,27 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
     @Override
     protected Document messageRecive(WechatReceiveEventClickMessage clickMessage) {
+    	
+    	//返回对象
     	Document respDoc=null;
-    	String eventKey=clickMessage.getEventKey();
+    	
+    	final String eventKey=clickMessage.getEventKey();
+    	final String responseToUserName = clickMessage.getFromUserName();
+		final String responseFromUserName = clickMessage.getToUserName();
     	LOGGER.debug("EventKey="+eventKey);
     	WechatEventClickMessageEventkeyEnum eventKeyEnum=WechatEventClickMessageEventkeyEnum.valueOf(eventKey);
-    	switch(eventKeyEnum){
+    	
+		switch(eventKeyEnum){
     	case GetTextMessage:{
-    		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(clickMessage.getFromUserName(), clickMessage.getToUserName(), "text");
-    		textMessageResponse.setContent("Hello,This is a test text message.你好！這是一條測試文本消息");
+    		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName, "text");
+    		textMessageResponse.setContent("Hello,This is a test text message.\n你好！這是一條測試文本消息");
     		respDoc=WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+    	};break;
+    	case GetImageMessage:{
+    		String mediaId="dtmu8eYt5ff4IvcLqZIH8yZR8ivKRKbuwiqIuRHKsDo";
+    		WechatReceiveReplayImageMessageResponse imageMessageResponse=new WechatReceiveReplayImageMessageResponse(responseToUserName, responseFromUserName);
+    		imageMessageResponse.setMediaId(mediaId);
+    		respDoc=WechatMessageConvertDocumentHelper.imageMessageResponseToDocumnet(imageMessageResponse);
     	};break;
     	}
     	
