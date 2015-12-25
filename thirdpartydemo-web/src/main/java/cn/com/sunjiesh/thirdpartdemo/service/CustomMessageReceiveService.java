@@ -58,37 +58,51 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
     @Override
     protected Document messageRecive(WechatNormalTextMessageRequest textMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=textMessage.getFromUserName();
+		String responseFromUserName=textMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveNormalImageMessage imageMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=imageMessage.getFromUserName();
+		String responseFromUserName=imageMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveNormalVoiceMessage voiceMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=voiceMessage.getFromUserName();
+		String responseFromUserName=voiceMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveNormalVideoMessage videoMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=videoMessage.getFromUserName();
+		String responseFromUserName=videoMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveNormalShortvideoMessage shortVodeoMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=shortVodeoMessage.getFromUserName();
+		String responseFromUserName=shortVodeoMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveNormalLocationMessage locationMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=locationMessage.getFromUserName();
+		String responseFromUserName=locationMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveNormalLinkMessage linkMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=linkMessage.getFromUserName();
+		String responseFromUserName=linkMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
@@ -105,7 +119,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     	
 		switch(eventKeyEnum){
     	case GetTextMessage:{
-    		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName, "text");
+    		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
     		textMessageResponse.setContent("Hello,This is a test text message.\n你好！這是一條測試文本消息");
     		respDoc=WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
     	};break;
@@ -115,6 +129,9 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     		imageMessageResponse.setMediaId(mediaId);
     		respDoc=WechatMessageConvertDocumentHelper.imageMessageResponseToDocumnet(imageMessageResponse);
     	};break;
+    	default:{
+    		respDoc=respError(responseToUserName, responseFromUserName);
+    	}
     	}
     	
 		return respDoc;
@@ -123,46 +140,78 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
     @Override
     protected Document messageRecive(WechatReceiveEventLocationMessage locationMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=locationMessage.getFromUserName();
+		String responseFromUserName=locationMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
+		
     }
+
 
     @Override
     protected Document messageRecive(WechatReceiveEventScanMessage scanMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=scanMessage.getFromUserName();
+		String responseFromUserName=scanMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveEventSubscribeMessage subscribeMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=subscribeMessage.getFromUserName();
+		String responseFromUserName=subscribeMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveEventViewMessage viewMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=viewMessage.getFromUserName();
+		String responseFromUserName=viewMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveEventScancodeCommonMessage scanCodePushMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=scanCodePushMessage.getFromUserName();
+		String responseFromUserName=scanCodePushMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveEventWeixinMessage picPhotoOrAlbumEventMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=picPhotoOrAlbumEventMessage.getFromUserName();
+		String responseFromUserName=picPhotoOrAlbumEventMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveEventPicSysphotoMessage picSysphotoMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=picSysphotoMessage.getFromUserName();
+		String responseFromUserName=picSysphotoMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveEventPicPhotoOrAlbumMessage picPhotoOrAlbumEventMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=picPhotoOrAlbumEventMessage.getFromUserName();
+		String responseFromUserName=picPhotoOrAlbumEventMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveEventPicCommonMessage wechatMessage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	String responseToUserName=wechatMessage.getFromUserName();
+		String responseFromUserName=wechatMessage.getToUserName();
+		return respError(responseToUserName, responseFromUserName);
     }
+    
+    /**
+     * 错误消息返回
+     * @param responseToUserName
+     * @param responseFromUserName
+     * @return
+     */
+    protected Document respError(String responseToUserName, String responseFromUserName) {
+		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+		textMessageResponse.setContent("暂不支持");
+		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+	}
 }
