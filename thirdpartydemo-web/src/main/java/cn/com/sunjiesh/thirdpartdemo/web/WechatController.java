@@ -90,6 +90,7 @@ public class WechatController extends SpringBaseController{
 			LOGGER.debug("requestPart=" + requestBody);
 			LOGGER.debug("contentType=" + contentType);
 			String respXml=messageReceiveService.messageReceive(requestBody,queryParams);
+			LOGGER.debug("respXml="+respXml);
 			super.responseXml(response,respXml);
 		} catch (ServiceException ex) {
 			LOGGER.error("接收微信消息处理失败", ex);
