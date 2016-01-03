@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.com.sunjiesh.thirdpartdemo.common.WechatEventClickMessageEventkeyEnum;
-import cn.com.sunjiesh.thirdpartdemo.dao.RedisWechatAccessTokenDao;
 import cn.com.sunjiesh.thirdpartdemo.dao.RedisWechatMessageDao;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalImageMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLinkMessage;
@@ -39,6 +38,8 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 public class CustomMessageReceiveService extends AbstractWechatMessageReceiveService {
 
     private static final String LAST_IMAGE_MESSAGE_MEDIA_ID = "lastImageMessageMediaId";
+    
+    private static final String LAST_VOICE_MESSAGE_MEDIA_ID = "lastVoiceMessageMediaId";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomMessageReceiveService.class);
     
@@ -77,14 +78,21 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 		String responseFromUserName=imageMessage.getToUserName();
 		String mediaId=imageMessage.getMediaId();
 		redisWechatMessageDao.save(LAST_IMAGE_MESSAGE_MEDIA_ID, mediaId);
-		return respError(responseToUserName, responseFromUserName);
+		
+		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+		textMessageResponse.setContent("图片已经上传，midiaId为="+mediaId);
+		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
     }
 
     @Override
     protected Document messageRecive(WechatReceiveNormalVoiceMessage voiceMessage) {
     	String responseToUserName=voiceMessage.getFromUserName();
 		String responseFromUserName=voiceMessage.getToUserName();
-		return respError(responseToUserName, responseFromUserName);
+		String mediaId=voiceMessage.getMediaId();
+		redisWechatMessageDao.save(LAST_VOICE_MESSAGE_MEDIA_ID, mediaId);
+		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+		textMessageResponse.setContent("语音已经上传，midiaId为="+mediaId);
+		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
     }
 
     @Override
