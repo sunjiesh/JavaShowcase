@@ -30,6 +30,7 @@ import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayTextMessageResponse;
+import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayVoiceMessageResponse;
 import cn.com.sunjiesh.wechat.service.AbstractWechatMessageReceiveService;
 import cn.com.sunjiesh.wechat.service.IWechatMessageReceiveProcessService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
@@ -144,9 +145,10 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     	case GetImageMessage:{
     		String mediaId=redisWechatMessageDao.get(LAST_IMAGE_MESSAGE_MEDIA_ID);
     		if(StringUtils.isEmpty(mediaId)){
-    			LOGGER.warn("没有找到用户上传的图片，请上传一张图片之后再试");
+    			final String errorMsg = "没有找到用户上传的图片，请上传一张图片之后再试";
+				LOGGER.warn(errorMsg);
     			WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
-        		textMessageResponse.setContent("没有找到用户上传的图片，请上传一张图片之后再试");
+        		textMessageResponse.setContent(errorMsg);
         		respDoc=WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
     		}else{
     			WechatReceiveReplayImageMessageResponse imageMessageResponse=new WechatReceiveReplayImageMessageResponse(responseToUserName, responseFromUserName);
@@ -154,6 +156,20 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
         		respDoc=WechatMessageConvertDocumentHelper.imageMessageResponseToDocumnet(imageMessageResponse);
     		}
     		
+    	};break;
+    	case GetVoiceMessage:{
+    		String mediaId=redisWechatMessageDao.get(LAST_VOICE_MESSAGE_MEDIA_ID);
+    		if(StringUtils.isEmpty(mediaId)){
+    			final String errorMsg = "没有找到用户上传的语音，请重新发送一条语音消息之后再试";
+				LOGGER.warn(errorMsg);
+    			WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+        		textMessageResponse.setContent(errorMsg);
+        		respDoc=WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+    		}else{
+    			WechatReceiveReplayVoiceMessageResponse voiceMessageResponse=new WechatReceiveReplayVoiceMessageResponse(responseToUserName, responseFromUserName);
+    			voiceMessageResponse.setMediaId(mediaId);
+    			respDoc=WechatMessageConvertDocumentHelper.voiceMessageResponseToDocumnet(voiceMessageResponse);
+    		}
     	};break;
     	default:{
     		respDoc=respError(responseToUserName, responseFromUserName);
