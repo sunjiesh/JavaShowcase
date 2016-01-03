@@ -1,5 +1,6 @@
 package cn.com.sunjiesh.thirdpartdemo.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,9 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 @Service
 public class CustomMessageReceiveService extends AbstractWechatMessageReceiveService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomMessageReceiveService.class);
+    private static final String LAST_IMAGE_MESSAGE_MEDIA_ID = "lastImageMessageMediaId";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomMessageReceiveService.class);
     
     @Autowired
     private IWechatMessageReceiveProcessService messageReceiveProcessService;
@@ -73,7 +76,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     	String responseToUserName=imageMessage.getFromUserName();
 		String responseFromUserName=imageMessage.getToUserName();
 		String mediaId=imageMessage.getMediaId();
-		redisWechatMessageDao.save("lastImageMessageMediaId", mediaId);
+		redisWechatMessageDao.save(LAST_IMAGE_MESSAGE_MEDIA_ID, mediaId);
 		return respError(responseToUserName, responseFromUserName);
     }
 
@@ -131,10 +134,18 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     		respDoc=WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
     	};break;
     	case GetImageMessage:{
-    		String mediaId="dtmu8eYt5ff4IvcLqZIH8yZR8ivKRKbuwiqIuRHKsDo";
-    		WechatReceiveReplayImageMessageResponse imageMessageResponse=new WechatReceiveReplayImageMessageResponse(responseToUserName, responseFromUserName);
-    		imageMessageResponse.setMediaId(mediaId);
-    		respDoc=WechatMessageConvertDocumentHelper.imageMessageResponseToDocumnet(imageMessageResponse);
+    		String mediaId=redisWechatMessageDao.get(LAST_IMAGE_MESSAGE_MEDIA_ID);
+    		if(StringUtils.isEmpty(mediaId)){
+    			LOGGER.warn("没有找到用户上传的图片，请上传一张图片之后再试");
+    			WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+        		textMessageResponse.setContent("没有找到用户上传的图片，请上传一张图片之后再试");
+        		respDoc=WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+    		}else{
+    			WechatReceiveReplayImageMessageResponse imageMessageResponse=new WechatReceiveReplayImageMessageResponse(responseToUserName, responseFromUserName);
+        		imageMessageResponse.setMediaId(mediaId);
+        		respDoc=WechatMessageConvertDocumentHelper.imageMessageResponseToDocumnet(imageMessageResponse);
+    		}
+    		
     	};break;
     	default:{
     		respDoc=respError(responseToUserName, responseFromUserName);
