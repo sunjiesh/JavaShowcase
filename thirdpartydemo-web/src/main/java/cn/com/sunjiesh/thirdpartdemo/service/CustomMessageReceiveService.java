@@ -1,6 +1,14 @@
 package cn.com.sunjiesh.thirdpartdemo.service;
 
+import org.dom4j.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import cn.com.sunjiesh.thirdpartdemo.common.WechatEventClickMessageEventkeyEnum;
+import cn.com.sunjiesh.thirdpartdemo.dao.RedisWechatAccessTokenDao;
+import cn.com.sunjiesh.thirdpartdemo.dao.RedisWechatMessageDao;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalImageMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLinkMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLocationMessage;
@@ -24,13 +32,7 @@ import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMes
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayTextMessageResponse;
 import cn.com.sunjiesh.wechat.service.AbstractWechatMessageReceiveService;
 import cn.com.sunjiesh.wechat.service.IWechatMessageReceiveProcessService;
-import org.dom4j.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class CustomMessageReceiveService extends AbstractWechatMessageReceiveService {
@@ -39,6 +41,9 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     
     @Autowired
     private IWechatMessageReceiveProcessService messageReceiveProcessService;
+    
+    @Autowired
+    private RedisWechatMessageDao redisWechatMessageDao;
 
     @Override
     protected Document messageReceive(Document doc4j) throws ServiceException {
@@ -67,6 +72,8 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     protected Document messageRecive(WechatReceiveNormalImageMessage imageMessage) {
     	String responseToUserName=imageMessage.getFromUserName();
 		String responseFromUserName=imageMessage.getToUserName();
+		String mediaId=imageMessage.getMediaId();
+		redisWechatMessageDao.save("lastImageMessageMediaId", mediaId);
 		return respError(responseToUserName, responseFromUserName);
     }
 
