@@ -29,6 +29,8 @@ import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessa
 import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMessageResponse;
+import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayNewsMessageResponse;
+import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayNewsMessageResponse.WechatReceiveReplayNewsMessageResponseItem;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayTextMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayVoiceMessageResponse;
 import cn.com.sunjiesh.wechat.service.AbstractWechatMessageReceiveService;
@@ -170,6 +172,19 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     			voiceMessageResponse.setMediaId(mediaId);
     			respDoc=WechatMessageConvertDocumentHelper.voiceMessageResponseToDocumnet(voiceMessageResponse);
     		}
+    	};break;
+    	case GETNEWSMESSAGE1:{
+    		WechatReceiveReplayNewsMessageResponse newsReplayMessage = new WechatReceiveReplayNewsMessageResponse(responseToUserName, responseFromUserName, "news");
+            WechatReceiveReplayNewsMessageResponse.WechatReceiveReplayNewsMessageResponseItem newsReplayMessageItem = newsReplayMessage.new WechatReceiveReplayNewsMessageResponseItem();
+            newsReplayMessageItem.setDescription("测试图文消息");
+            newsReplayMessageItem.setTitle("测试图片消息");
+            newsReplayMessageItem.setUrl("http://ubuntu-sunjiesh.myalauda.cn/index.html");
+            newsReplayMessageItem.setPicUrl("http://ubuntu-sunjiesh.myalauda.cn/360_200.jpg");
+            newsReplayMessage.addItem(newsReplayMessageItem);
+            respDoc=WechatMessageConvertDocumentHelper.newsMessageResponseToDocument(newsReplayMessage);
+    	};break;
+    	case GETNEWSMESSAGE2:{
+    		
     	};break;
     	default:{
     		respDoc=respError(responseToUserName, responseFromUserName);
