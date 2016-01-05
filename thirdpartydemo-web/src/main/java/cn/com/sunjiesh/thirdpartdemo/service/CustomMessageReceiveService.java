@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import cn.com.sunjiesh.thirdpartdemo.common.WechatEventClickMessageEventkeyEnum;
 import cn.com.sunjiesh.thirdpartdemo.dao.RedisWechatMessageDao;
+import cn.com.sunjiesh.wechat.common.WechatResponseConstants;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalImageMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLinkMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLocationMessage;
@@ -174,7 +175,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     		}
     	};break;
     	case GETNEWSMESSAGE1:{
-    		WechatReceiveReplayNewsMessageResponse newsReplayMessage = new WechatReceiveReplayNewsMessageResponse(responseToUserName, responseFromUserName, "news");
+    		WechatReceiveReplayNewsMessageResponse newsReplayMessage = new WechatReceiveReplayNewsMessageResponse(responseToUserName, responseFromUserName);
             WechatReceiveReplayNewsMessageResponse.WechatReceiveReplayNewsMessageResponseItem newsReplayMessageItem = newsReplayMessage.new WechatReceiveReplayNewsMessageResponseItem();
             newsReplayMessageItem.setDescription("测试图文消息");
             newsReplayMessageItem.setTitle("测试图片消息");
@@ -184,7 +185,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
             respDoc=WechatMessageConvertDocumentHelper.newsMessageResponseToDocument(newsReplayMessage);
     	};break;
     	case GETNEWSMESSAGE2:{
-    		WechatReceiveReplayNewsMessageResponse newsReplayMessage = new WechatReceiveReplayNewsMessageResponse(responseToUserName, responseFromUserName, "news");
+    		WechatReceiveReplayNewsMessageResponse newsReplayMessage = new WechatReceiveReplayNewsMessageResponse(responseToUserName, responseFromUserName);
             WechatReceiveReplayNewsMessageResponse.WechatReceiveReplayNewsMessageResponseItem newsReplayMessageItem1 = newsReplayMessage.new WechatReceiveReplayNewsMessageResponseItem();
             newsReplayMessageItem1.setDescription("测试图文消息1");
             newsReplayMessageItem1.setTitle("测试图片消息1");
