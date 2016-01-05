@@ -184,7 +184,20 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
             respDoc=WechatMessageConvertDocumentHelper.newsMessageResponseToDocument(newsReplayMessage);
     	};break;
     	case GETNEWSMESSAGE2:{
-    		
+    		WechatReceiveReplayNewsMessageResponse newsReplayMessage = new WechatReceiveReplayNewsMessageResponse(responseToUserName, responseFromUserName, "news");
+            WechatReceiveReplayNewsMessageResponse.WechatReceiveReplayNewsMessageResponseItem newsReplayMessageItem1 = newsReplayMessage.new WechatReceiveReplayNewsMessageResponseItem();
+            newsReplayMessageItem1.setDescription("测试图文消息1");
+            newsReplayMessageItem1.setTitle("测试图片消息1");
+            newsReplayMessageItem1.setUrl("http://ubuntu-sunjiesh.myalauda.cn/index.html");
+            newsReplayMessageItem1.setPicUrl("http://ubuntu-sunjiesh.myalauda.cn/360_200.jpg");
+            newsReplayMessage.addItem(newsReplayMessageItem1);
+            WechatReceiveReplayNewsMessageResponse.WechatReceiveReplayNewsMessageResponseItem newsReplayMessageItem2 = newsReplayMessage.new WechatReceiveReplayNewsMessageResponseItem();
+            newsReplayMessageItem2.setDescription("测试图文消息2");
+            newsReplayMessageItem2.setTitle("测试图片消息2");
+            newsReplayMessageItem2.setUrl("http://ubuntu-sunjiesh.myalauda.cn/index.html");
+            newsReplayMessageItem2.setPicUrl("http://ubuntu-sunjiesh.myalauda.cn/360_200.jpg");
+            newsReplayMessage.addItem(newsReplayMessageItem2);
+            respDoc=WechatMessageConvertDocumentHelper.newsMessageResponseToDocument(newsReplayMessage);
     	};break;
     	default:{
     		respDoc=respError(responseToUserName, responseFromUserName);
