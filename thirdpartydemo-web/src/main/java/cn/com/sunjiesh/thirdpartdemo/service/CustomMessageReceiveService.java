@@ -1,5 +1,11 @@
 package cn.com.sunjiesh.thirdpartdemo.service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.slf4j.Logger;
@@ -7,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.com.sunjiesh.thirdpartdemo.common.ThirdpartyDemoConstants;
 import cn.com.sunjiesh.thirdpartdemo.common.WechatEventClickMessageEventkeyEnum;
 import cn.com.sunjiesh.thirdpartdemo.dao.RedisWechatMessageDao;
-import cn.com.sunjiesh.wechat.common.WechatResponseConstants;
+import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
+import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalImageMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLinkMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLocationMessage;
@@ -27,13 +35,14 @@ import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventScancodeCom
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventViewMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessage;
+import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
 import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayNewsMessageResponse;
-import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayNewsMessageResponse.WechatReceiveReplayNewsMessageResponseItem;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayTextMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayVoiceMessageResponse;
+import cn.com.sunjiesh.wechat.model.user.WechatUserDto;
 import cn.com.sunjiesh.wechat.service.AbstractWechatMessageReceiveService;
 import cn.com.sunjiesh.wechat.service.IWechatMessageReceiveProcessService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
@@ -52,6 +61,14 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     
     @Autowired
     private RedisWechatMessageDao redisWechatMessageDao;
+    
+    @Autowired
+    protected IWechatAccessTokenDao wechatAccessTokenDao;
+    
+    @Autowired
+    private ThirdpartyUserService thirdpartyUserService;
+
+    private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
 
     @Override
     protected Document messageReceive(Document doc4j) throws ServiceException {
@@ -226,10 +243,31 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveEventSubscribeMessage subscribeMessage) {
-    	String responseToUserName=subscribeMessage.getFromUserName();
+    protected Document messageRecive(WechatReceiveEventSubscribeMessage subscribeMessage) throws ServiceException {
+    	//根据OpenId查询对应的信息
+        String wechatOpenId = subscribeMessage.getFromUserName();
+        WechatUserDto wechatUserDto = new WechatUserDto();
+        wechatUserDto.setOpenId(wechatOpenId);
+        wechatUserDto = WechatUserHandler.getUserInfo(wechatUserDto, wechatAccessTokenDao.get());
+
+        //封装WechatUser对象，插入數據到客戶端
+        WechatUser wechatUser = new WechatUser();
+        try {
+            BeanUtils.copyProperties(wechatUser, wechatUserDto);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            LOGGER.error("Convert WechatUserDto To WechatUser Error", e);
+        }
+        wechatUser.setCreateTime(new Date());
+        wechatUser.setCreateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
+        wechatUser.setUpdateTime(new Date());
+        wechatUser.setUpdateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
+        thirdpartyUserService.save(wechatUser);
+        
+        String responseToUserName=subscribeMessage.getFromUserName();
 		String responseFromUserName=subscribeMessage.getToUserName();
-		return respError(responseToUserName, responseFromUserName);
+        WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+		textMessageResponse.setContent("谢谢关注公众号");
+		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
     }
 
     @Override
