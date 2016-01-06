@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.Test;
 
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
+import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
 @Test
@@ -29,5 +30,13 @@ public class CustomMessageReceiveServiceTest  extends AbstractTestNGSpringContex
 		Document respDoc=messageReceiveService.messageRecive(subscribeMessage);
 		LOGGER.debug(respDoc.asXML());
 	}
+	
+	public void testEventUnSubscribeMessageReceive() throws ServiceException{
+		String toUserName="gh_554f61b4d4c8";
+		String fromUserName="oiY-ExO09BRAH3kP80a_l438aBwQ";
+		WechatReceiveEventUnSubscribeMessage subscribeMessage = new WechatReceiveEventUnSubscribeMessage(toUserName, fromUserName, "subscribe", "SUBSCRIBE");
+		Document respDoc=messageReceiveService.messageRecive(subscribeMessage);
+		LOGGER.debug(respDoc.asXML());
+	} 
 	
 }

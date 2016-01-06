@@ -33,6 +33,7 @@ import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventPicSysphoto
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventScanMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventScancodeCommonMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
+import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventViewMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessage;
 import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
@@ -269,6 +270,30 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 		textMessageResponse.setContent("谢谢关注公众号");
 		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
     }
+    
+    @Override
+	protected Document messageRecive(WechatReceiveEventUnSubscribeMessage unSubscribeMessage) throws ServiceException {
+    	//根据OpenId查询对应的信息
+        String wechatOpenId = unSubscribeMessage.getFromUserName();
+        WechatUserDto wechatUserDto = new WechatUserDto();
+        wechatUserDto.setOpenId(wechatOpenId);
+        wechatUserDto = WechatUserHandler.getUserInfo(wechatUserDto, wechatAccessTokenDao.get());
+        
+        //封装WechatUser对象，插入數據到客戶端
+        WechatUser wechatUser = new WechatUser();
+        try {
+            BeanUtils.copyProperties(wechatUser, wechatUserDto);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            LOGGER.error("Convert WechatUserDto To WechatUser Error", e);
+        }
+        thirdpartyUserService.delete(wechatUser);
+        
+        String responseToUserName=unSubscribeMessage.getFromUserName();
+		String responseFromUserName=unSubscribeMessage.getToUserName();
+        WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+		textMessageResponse.setContent("希望下次再次关注公众号");
+		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+	}
 
     @Override
     protected Document messageRecive(WechatReceiveEventViewMessage viewMessage) {
@@ -323,4 +348,6 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 		textMessageResponse.setContent("暂不支持");
 		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
 	}
+
+	
 }
