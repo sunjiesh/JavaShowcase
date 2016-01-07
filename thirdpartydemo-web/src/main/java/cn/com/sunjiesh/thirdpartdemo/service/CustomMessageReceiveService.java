@@ -27,7 +27,6 @@ import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLinkMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLocationMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalShortvideoMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalVideoMessage;
-import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalVoiceMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventClickMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventLocationMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventLocationSelectMessage;
@@ -45,6 +44,7 @@ import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
 import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalImageMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.message.WechatNormalVoiceMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.media.WechatUploadMediaResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayNewsMessageResponse;
@@ -162,7 +162,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveNormalVoiceMessage voiceMessage) {
+    protected Document messageRecive(WechatNormalVoiceMessageRequest voiceMessage) {
     	String responseToUserName=voiceMessage.getFromUserName();
 		String responseFromUserName=voiceMessage.getToUserName();
 		String mediaId=voiceMessage.getMediaId();
