@@ -23,7 +23,6 @@ import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
-import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalImageMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLinkMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLocationMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalShortvideoMessage;
@@ -44,6 +43,7 @@ import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessa
 import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
 import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
 import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
+import cn.com.sunjiesh.wechat.model.request.message.WechatNormalImageMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.media.WechatUploadMediaResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMessageResponse;
@@ -58,11 +58,13 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 @Service
 public class CustomMessageReceiveService extends AbstractWechatMessageReceiveService {
 
-    private static final String LAST_IMAGE_MESSAGE_MEDIA_ID = "lastImageMessageMediaId";
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomMessageReceiveService.class);
+
+	private static final String LAST_IMAGE_MESSAGE_MEDIA_ID = "lastImageMessageMediaId";
     
     private static final String LAST_VOICE_MESSAGE_MEDIA_ID = "lastVoiceMessageMediaId";
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomMessageReceiveService.class);
+    
+	private static final String LAST_VIDEO_MESSAGE_MEDIA_ID = "lastVideoMessageMediaId";
     
     @Autowired
     private IWechatMessageReceiveProcessService messageReceiveProcessService;
@@ -108,7 +110,8 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
         String message = textMessage.getContent();
         final TulingResponse response = new TulingHelper().callTuling(message);
         int tulingCode = response.getCode();
-        switch (tulingCode) {
+        final String content = response.getUrl();
+		switch (tulingCode) {
             case TulingConstants.TULING_RESPONSE_CODE_TEXT:
             	WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
         		textMessageResponse.setContent(response.getText());
@@ -117,7 +120,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
                 //返回圖片需要處理時間，直接返回NULL值，通過異步進行處理發送消息
                 scheduledThreadPool.submit(() -> {
                     try {
-                        String url = response.getUrl();
+                        String url = content;
                         String text = response.getText();
                         //下載圖片並且上傳到微信上，生成圖文消息
                         File tmpFile = new HttpService().getFileResponseFromHttpGetMethod(url);
@@ -137,9 +140,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
                     }
                 });
 
-                textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
-        		textMessageResponse.setContent(response.getUrl());
-        		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+                return replayTextMessage(responseToUserName, responseFromUserName, content);
            
             default:
                 return respError(toUserName, fromUserName);
@@ -150,15 +151,14 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveNormalImageMessage imageMessage) {
+    protected Document messageRecive(WechatNormalImageMessageRequest imageMessage) throws ServiceException{
     	String responseToUserName=imageMessage.getFromUserName();
 		String responseFromUserName=imageMessage.getToUserName();
 		String mediaId=imageMessage.getMediaId();
 		redisWechatMessageDao.save(LAST_IMAGE_MESSAGE_MEDIA_ID, mediaId);
 		
-		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
-		textMessageResponse.setContent("图片已经上传，midiaId为="+mediaId);
-		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+		final String content = "图片已经上传，midiaId为="+mediaId;
+		return replayTextMessage(responseToUserName, responseFromUserName, content);
     }
 
     @Override
@@ -167,16 +167,20 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 		String responseFromUserName=voiceMessage.getToUserName();
 		String mediaId=voiceMessage.getMediaId();
 		redisWechatMessageDao.save(LAST_VOICE_MESSAGE_MEDIA_ID, mediaId);
-		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
-		textMessageResponse.setContent("语音已经上传，midiaId为="+mediaId);
-		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+		String content = "语音已经上传，midiaId为="+mediaId;
+		return replayTextMessage(responseToUserName, responseFromUserName, content);
     }
+
+	
 
     @Override
     protected Document messageRecive(WechatReceiveNormalVideoMessage videoMessage) {
     	String responseToUserName=videoMessage.getFromUserName();
 		String responseFromUserName=videoMessage.getToUserName();
-		return respError(responseToUserName, responseFromUserName);
+		String mediaId=videoMessage.getMediaId();
+		redisWechatMessageDao.save(LAST_VIDEO_MESSAGE_MEDIA_ID, mediaId);
+		String content = "视频已经上传，midiaId为="+mediaId;
+		return replayTextMessage(responseToUserName, responseFromUserName, content);
     }
 
     @Override

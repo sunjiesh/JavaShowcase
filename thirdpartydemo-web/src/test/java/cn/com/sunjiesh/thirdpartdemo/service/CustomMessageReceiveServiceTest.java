@@ -12,8 +12,10 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.Test;
 
+import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalVideoMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
+import cn.com.sunjiesh.wechat.model.request.message.WechatNormalImageMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
@@ -48,6 +50,17 @@ public class CustomMessageReceiveServiceTest  extends AbstractTestNGSpringContex
         textMessage.setContent("测试");
         Document respDoc=messageReceiveService.messageRecive(textMessage);
         LOGGER.debug(respDoc.asXML());
+	}
+	
+	public void testNormalImageMessageReceive() throws ServiceException{
+		WechatNormalImageMessageRequest imageMessage=new WechatNormalImageMessageRequest(toUserName, fromUserName,"image");
+		imageMessage.setMsgId(UUID.randomUUID().toString());
+		Document respDoc=messageReceiveService.messageRecive(imageMessage);
+	    LOGGER.debug(respDoc.asXML());
+	}
+	
+	public void testNormalVideoMessageReceive() throws ServiceException{
+		
 	}
 	
 }
