@@ -1,5 +1,6 @@
 package cn.com.sunjiesh.thirdpartdemo.service;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.concurrent.Executors;
@@ -16,7 +17,11 @@ import org.springframework.stereotype.Service;
 import cn.com.sunjiesh.thirdpartdemo.common.ThirdpartyDemoConstants;
 import cn.com.sunjiesh.thirdpartdemo.common.WechatEventClickMessageEventkeyEnum;
 import cn.com.sunjiesh.thirdpartdemo.dao.RedisWechatMessageDao;
+import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingConstants;
+import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingHelper;
 import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
+import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
+import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalImageMessage;
 import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLinkMessage;
@@ -36,9 +41,11 @@ import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMe
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventViewMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessage;
+import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
 import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
 import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
+import cn.com.sunjiesh.wechat.model.response.media.WechatUploadMediaResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayNewsMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayTextMessageResponse;
@@ -88,10 +95,58 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     }
 
     @Override
-    protected Document messageRecive(WechatNormalTextMessageRequest textMessage) {
+    protected Document messageRecive(WechatNormalTextMessageRequest textMessage) throws ServiceException {
     	String responseToUserName=textMessage.getFromUserName();
 		String responseFromUserName=textMessage.getToUserName();
-		return respError(responseToUserName, responseFromUserName);
+		
+		LOGGER.debug("receive a WechatReceiveNormalTextMessage request ");
+
+        LOGGER.debug("receive a messageRecive request ");
+        String toUserName = textMessage.getFromUserName();
+        String fromUserName = textMessage.getToUserName();
+
+        String message = textMessage.getContent();
+        final TulingResponse response = new TulingHelper().callTuling(message);
+        int tulingCode = response.getCode();
+        switch (tulingCode) {
+            case TulingConstants.TULING_RESPONSE_CODE_TEXT:
+            	WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+        		textMessageResponse.setContent(response.getText());
+        		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+            case TulingConstants.TULING_RESPONSE_CODE_LINK:
+                //返回圖片需要處理時間，直接返回NULL值，通過異步進行處理發送消息
+                scheduledThreadPool.submit(() -> {
+                    try {
+                        String url = response.getUrl();
+                        String text = response.getText();
+                        //下載圖片並且上傳到微信上，生成圖文消息
+                        File tmpFile = new HttpService().getFileResponseFromHttpGetMethod(url);
+                        if (tmpFile != null) {
+                            String fileName = tmpFile.getName().toLowerCase();
+                            String fileType = fileName.substring(fileName.lastIndexOf(".") + 1);
+                            if (fileType.contains("jpg") || fileType.contains("jpeg") || fileType.contains("png")) {
+                                //僅支持的圖片類型
+                                WechatUploadMediaResponse uploadMediaResponse = WechatMediaHandler.uploadMedia(tmpFile, "image", wechatAccessTokenDao.get());
+                                String mediaId = uploadMediaResponse.getMediaId();
+                                LOGGER.debug("微信臨時圖片素材上傳成功，mediaId=" + mediaId);
+                            }
+
+                        }
+                    } catch (ServiceException ex) {
+                        LOGGER.error("Server Error", ex);
+                    }
+                });
+
+                textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+        		textMessageResponse.setContent(response.getUrl());
+        		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+           
+            default:
+                return respError(toUserName, fromUserName);
+        }
+        
+        
+		
     }
 
     @Override
