@@ -13,8 +13,8 @@
 	<url>http://maven.apache.org</url>
 	
 	<properties>
-		<utils.version>0.4.3</utils.version>
-		<wechat.version>0.8.4</wechat.version>
+		<utils.version>0.4.5</utils.version>
+		<wechat.version>0.8.5</wechat.version>
 	</properties>
 
 	<modules>
@@ -42,8 +42,7 @@
 		<dependency>
 			<groupId>cn.com.sunjiesh</groupId>
 			<artifactId>utils-web</artifactId>
-			<version>${utils.version}</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>cn.com.sunjiesh</groupId>
 			<artifactId>utils-common</artifactId>
