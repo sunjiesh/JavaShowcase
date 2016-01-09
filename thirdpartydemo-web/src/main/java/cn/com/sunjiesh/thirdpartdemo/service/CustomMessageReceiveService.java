@@ -65,6 +65,9 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     private static final String LAST_VOICE_MESSAGE_MEDIA_ID = "lastVoiceMessageMediaId";
     
 	private static final String LAST_VIDEO_MESSAGE_MEDIA_ID = "lastVideoMessageMediaId";
+	
+	private static final String LAST_SHORT_VIDEO_MESSAGE_MEDIA_ID = "lastShortVideoMessageMediaId";
+
     
     @Autowired
     private IWechatMessageReceiveProcessService messageReceiveProcessService;
@@ -187,21 +190,25 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     protected Document messageRecive(WechatNormalShortvideoMessageRequest shortVodeoMessage) {
     	String responseToUserName=shortVodeoMessage.getFromUserName();
 		String responseFromUserName=shortVodeoMessage.getToUserName();
-		return respError(responseToUserName, responseFromUserName);
+		String mediaId=shortVodeoMessage.getMediaId();
+		redisWechatMessageDao.save(LAST_SHORT_VIDEO_MESSAGE_MEDIA_ID, mediaId);
+		String content = "视频已经上传，midiaId为="+mediaId;
+		return replayTextMessage(responseToUserName, responseFromUserName, content);
     }
 
     @Override
     protected Document messageRecive(WechatNormalLocationMessageRequest locationMessage) {
     	String responseToUserName=locationMessage.getFromUserName();
 		String responseFromUserName=locationMessage.getToUserName();
-		return respError(responseToUserName, responseFromUserName);
+		return replayTextMessage(responseToUserName, responseFromUserName, "信息已经接收");
+
     }
 
     @Override
     protected Document messageRecive(WechatNormalLinkMessageRequest linkMessage) {
     	String responseToUserName=linkMessage.getFromUserName();
 		String responseFromUserName=linkMessage.getToUserName();
-		return respError(responseToUserName, responseFromUserName);
+		return replayTextMessage(responseToUserName, responseFromUserName, "信息已经接收");
     }
 
     @Override
