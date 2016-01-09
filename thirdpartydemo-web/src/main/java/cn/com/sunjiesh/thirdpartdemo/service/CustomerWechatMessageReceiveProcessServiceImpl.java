@@ -15,11 +15,11 @@ import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
 import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
 import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
 import cn.com.sunjiesh.wechat.model.user.WechatUserDto;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventSubscribeMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventUnSubscribeMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.media.WechatUploadMediaResponse;
 import cn.com.sunjiesh.wechat.service.WechatMessageReceiveProcessServiceImpl;
@@ -39,7 +39,7 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
     private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
 
     @Override
-    public Document messageRecive(WechatReceiveEventSubscribeMessage wechatMessage) throws ServiceException {
+    public Document messageRecive(WechatEventSubscribeMessageRequest wechatMessage) throws ServiceException {
 
         //根据OpenId查询对应的信息
         String wechatOpenId = wechatMessage.getFromUserName();
@@ -65,7 +65,7 @@ public class CustomerWechatMessageReceiveProcessServiceImpl extends WechatMessag
     }
 
     @Override
-    public Document messageRecive(WechatReceiveEventUnSubscribeMessage wechatMessage) throws ServiceException {
+    public Document messageRecive(WechatEventUnSubscribeMessageRequest wechatMessage) throws ServiceException {
         Document document = super.messageRecive(wechatMessage);
         //查詢OpenId並創建用戶對象
         String wechatOpenId = wechatMessage.getFromUserName();

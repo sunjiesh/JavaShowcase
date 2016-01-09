@@ -23,27 +23,27 @@ import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
-import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLinkMessage;
-import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalLocationMessage;
-import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalShortvideoMessage;
-import cn.com.sunjiesh.wechat.entity.message.WechatReceiveNormalVideoMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventClickMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventLocationMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventLocationSelectMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventPicCommonMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventPicPhotoOrAlbumMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventPicSysphotoMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventScanMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventScancodeCommonMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventViewMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessage;
 import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
 import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
 import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventClickMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventLocationMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventLocationSelectMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventScanMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventSubscribeMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventUnSubscribeMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalImageMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.message.WechatNormalLinkMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.message.WechatNormalLocationMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.message.WechatNormalShortvideoMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.message.WechatNormalVideoMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalVoiceMessageRequest;
 import cn.com.sunjiesh.wechat.model.response.media.WechatUploadMediaResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMessageResponse;
@@ -87,7 +87,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     }
 
     @Override
-    protected Document messageReceive(WechatReceiveEventLocationSelectMessage wechatMessage) {
+    protected Document messageReceive(WechatEventLocationSelectMessageRequest wechatMessage) {
         try {
             return messageReceiveProcessService.messageReceive(wechatMessage);
         } catch (ServiceException ex) {
@@ -174,7 +174,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 	
 
     @Override
-    protected Document messageRecive(WechatReceiveNormalVideoMessage videoMessage) {
+    protected Document messageRecive(WechatNormalVideoMessageRequest videoMessage) {
     	String responseToUserName=videoMessage.getFromUserName();
 		String responseFromUserName=videoMessage.getToUserName();
 		String mediaId=videoMessage.getMediaId();
@@ -184,28 +184,28 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveNormalShortvideoMessage shortVodeoMessage) {
+    protected Document messageRecive(WechatNormalShortvideoMessageRequest shortVodeoMessage) {
     	String responseToUserName=shortVodeoMessage.getFromUserName();
 		String responseFromUserName=shortVodeoMessage.getToUserName();
 		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveNormalLocationMessage locationMessage) {
+    protected Document messageRecive(WechatNormalLocationMessageRequest locationMessage) {
     	String responseToUserName=locationMessage.getFromUserName();
 		String responseFromUserName=locationMessage.getToUserName();
 		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveNormalLinkMessage linkMessage) {
+    protected Document messageRecive(WechatNormalLinkMessageRequest linkMessage) {
     	String responseToUserName=linkMessage.getFromUserName();
 		String responseFromUserName=linkMessage.getToUserName();
 		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveEventClickMessage clickMessage) {
+    protected Document messageRecive(WechatEventClickMessageRequest clickMessage) {
     	
     	//返回对象
     	Document respDoc=null;
@@ -287,7 +287,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveEventLocationMessage locationMessage) {
+    protected Document messageRecive(WechatEventLocationMessageRequest locationMessage) {
     	String responseToUserName=locationMessage.getFromUserName();
 		String responseFromUserName=locationMessage.getToUserName();
 		return respError(responseToUserName, responseFromUserName);
@@ -296,14 +296,14 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
 
     @Override
-    protected Document messageRecive(WechatReceiveEventScanMessage scanMessage) {
+    protected Document messageRecive(WechatEventScanMessageRequest scanMessage) {
     	String responseToUserName=scanMessage.getFromUserName();
 		String responseFromUserName=scanMessage.getToUserName();
 		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveEventSubscribeMessage subscribeMessage) throws ServiceException {
+    protected Document messageRecive(WechatEventSubscribeMessageRequest subscribeMessage) throws ServiceException {
     	//根据OpenId查询对应的信息
         String wechatOpenId = subscribeMessage.getFromUserName();
         WechatUserDto wechatUserDto = new WechatUserDto();
@@ -331,7 +331,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     }
     
     @Override
-	protected Document messageRecive(WechatReceiveEventUnSubscribeMessage unSubscribeMessage) throws ServiceException {
+	protected Document messageRecive(WechatEventUnSubscribeMessageRequest unSubscribeMessage) throws ServiceException {
     	//根据OpenId查询对应的信息
         String wechatOpenId = unSubscribeMessage.getFromUserName();
         WechatUserDto wechatUserDto = new WechatUserDto();

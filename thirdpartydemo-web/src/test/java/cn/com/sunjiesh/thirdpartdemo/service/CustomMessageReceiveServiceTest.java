@@ -11,8 +11,8 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.Test;
 
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventSubscribeMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventUnSubscribeMessage;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventSubscribeMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventUnSubscribeMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalImageMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
@@ -31,13 +31,13 @@ public class CustomMessageReceiveServiceTest  extends AbstractTestNGSpringContex
 	String fromUserName="oiY-ExO09BRAH3kP80a_l438aBwQ";
 	
 	public void testEventSubscribeMessageReceive() throws ServiceException{
-		WechatReceiveEventSubscribeMessage subscribeMessage = new WechatReceiveEventSubscribeMessage(toUserName, fromUserName, "subscribe", "SUBSCRIBE");
+		WechatEventSubscribeMessageRequest subscribeMessage = new WechatEventSubscribeMessageRequest(toUserName, fromUserName, "subscribe", "SUBSCRIBE");
 		Document respDoc=messageReceiveService.messageRecive(subscribeMessage);
 		LOGGER.debug(respDoc.asXML());
 	}
 	
 	public void testEventUnSubscribeMessageReceive() throws ServiceException{
-		WechatReceiveEventUnSubscribeMessage subscribeMessage = new WechatReceiveEventUnSubscribeMessage(toUserName, fromUserName, "subscribe", "SUBSCRIBE");
+		WechatEventUnSubscribeMessageRequest subscribeMessage = new WechatEventUnSubscribeMessageRequest(toUserName, fromUserName, "subscribe", "SUBSCRIBE");
 		Document respDoc=messageReceiveService.messageRecive(subscribeMessage);
 		LOGGER.debug(respDoc.asXML());
 	}
