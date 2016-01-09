@@ -24,10 +24,6 @@ import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventPicCommonMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventPicPhotoOrAlbumMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventPicSysphotoMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventScancodeCommonMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventViewMessage;
 import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessage;
 import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
 import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
@@ -35,9 +31,13 @@ import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventClickMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventLocationMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventLocationSelectMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventPicSysphotoMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventScanMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventScancodeCommonMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventSubscribeMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventUnSubscribeMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventViewMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventPicPhotoOrAlbumMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalImageMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalLinkMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalLocationMessageRequest;
@@ -355,47 +355,34 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 	}
 
     @Override
-    protected Document messageRecive(WechatReceiveEventViewMessage viewMessage) {
+    protected Document messageRecive(WechatEventViewMessageRequest viewMessage) {
     	String responseToUserName=viewMessage.getFromUserName();
 		String responseFromUserName=viewMessage.getToUserName();
 		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveEventScancodeCommonMessage scanCodePushMessage) {
+    protected Document messageRecive(WechatEventScancodeCommonMessageRequest scanCodePushMessage) {
     	String responseToUserName=scanCodePushMessage.getFromUserName();
 		String responseFromUserName=scanCodePushMessage.getToUserName();
 		return respError(responseToUserName, responseFromUserName);
     }
 
-    @Override
-    protected Document messageRecive(WechatReceiveEventWeixinMessage picPhotoOrAlbumEventMessage) {
-    	String responseToUserName=picPhotoOrAlbumEventMessage.getFromUserName();
-		String responseFromUserName=picPhotoOrAlbumEventMessage.getToUserName();
-		return respError(responseToUserName, responseFromUserName);
-    }
 
     @Override
-    protected Document messageRecive(WechatReceiveEventPicSysphotoMessage picSysphotoMessage) {
+    protected Document messageRecive(WechatEventPicSysphotoMessageRequest picSysphotoMessage) {
     	String responseToUserName=picSysphotoMessage.getFromUserName();
 		String responseFromUserName=picSysphotoMessage.getToUserName();
 		return respError(responseToUserName, responseFromUserName);
     }
 
     @Override
-    protected Document messageRecive(WechatReceiveEventPicPhotoOrAlbumMessage picPhotoOrAlbumEventMessage) {
+    protected Document messageRecive(WechatEventPicPhotoOrAlbumMessageRequest picPhotoOrAlbumEventMessage) {
     	String responseToUserName=picPhotoOrAlbumEventMessage.getFromUserName();
 		String responseFromUserName=picPhotoOrAlbumEventMessage.getToUserName();
 		return respError(responseToUserName, responseFromUserName);
     }
 
-    @Override
-    protected Document messageRecive(WechatReceiveEventPicCommonMessage wechatMessage) {
-    	String responseToUserName=wechatMessage.getFromUserName();
-		String responseFromUserName=wechatMessage.getToUserName();
-		return respError(responseToUserName, responseFromUserName);
-    }
-    
     /**
      * 错误消息返回
      * @param responseToUserName
