@@ -52,7 +52,6 @@ import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayTextMess
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayVoiceMessageResponse;
 import cn.com.sunjiesh.wechat.model.user.WechatUserDto;
 import cn.com.sunjiesh.wechat.service.AbstractWechatMessageReceiveService;
-import cn.com.sunjiesh.wechat.service.IWechatMessageReceiveProcessService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
 @Service
@@ -69,8 +68,6 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 	private static final String LAST_SHORT_VIDEO_MESSAGE_MEDIA_ID = "lastShortVideoMessageMediaId";
 
     
-    @Autowired
-    private IWechatMessageReceiveProcessService messageReceiveProcessService;
     
     @Autowired
     private RedisWechatMessageDao redisWechatMessageDao;
@@ -91,11 +88,6 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
     @Override
     protected Document messageReceive(WechatEventLocationSelectMessageRequest wechatMessage) {
-        try {
-            return messageReceiveProcessService.messageReceive(wechatMessage);
-        } catch (ServiceException ex) {
-            LOGGER.error(ex.getMessage(),ex);
-        }
         return null;
     }
 

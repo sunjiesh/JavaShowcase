@@ -9,9 +9,4 @@
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
 	default-autowire="byName">
     <bean id="messageReceiveService" class="cn.com.sunjiesh.thirdpartdemo.service.CustomMessageReceiveService"></bean>
-    
-	<bean id="messageReceiveProcessService" class="cn.com.sunjiesh.thirdpartdemo.service.CustomerWechatMessageReceiveProcessServiceImpl">
-		<property name="thirdpartyUserService" ref="thirdpartyUserService"></property>
-		<property name="wechatAccessTokenDao" ref="wechatAccessTokenDao"/>
-	</bean>
 </beans>
