@@ -3,7 +3,7 @@
   <parent>
     <groupId>cn.com.sunjiesh</groupId>
     <artifactId>thirdpartydemo</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
   </parent>
   <artifactId>thirdpartydemo-core</artifactId>
   <name>thirdpartydemo-core</name>
