@@ -6,5 +6,6 @@ public enum WechatEventClickMessageEventkeyEnum {
 	GetImageMessage,//接收圖片消息
 	GetVoiceMessage,//接受语音消息
 	GETNEWSMESSAGE1,
-	GETNEWSMESSAGE2;
+	GETNEWSMESSAGE2,
+	GetTemplateMessage;//模板消息
 }

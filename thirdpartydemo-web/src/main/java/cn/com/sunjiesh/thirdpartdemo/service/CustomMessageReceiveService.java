@@ -2,6 +2,7 @@ package cn.com.sunjiesh.thirdpartdemo.service;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -23,21 +24,21 @@ import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventPicCommonMessage;
-import cn.com.sunjiesh.wechat.entity.message.event.WechatReceiveEventWeixinMessage;
+import cn.com.sunjiesh.wechat.entity.message.WechatSendTemplateMessage;
 import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
+import cn.com.sunjiesh.wechat.handler.WechatTemplateMessageHandler;
 import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
 import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventClickMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventLocationMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventLocationSelectMessageRequest;
+import cn.com.sunjiesh.wechat.model.request.event.WechatEventPicPhotoOrAlbumMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventPicSysphotoMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventScanMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventScancodeCommonMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventSubscribeMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventUnSubscribeMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.event.WechatEventViewMessageRequest;
-import cn.com.sunjiesh.wechat.model.request.event.WechatEventPicPhotoOrAlbumMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalImageMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalLinkMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalLocationMessageRequest;
@@ -204,7 +205,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     }
 
     @Override
-    protected Document messageRecive(WechatEventClickMessageRequest clickMessage) {
+    protected Document messageRecive(WechatEventClickMessageRequest clickMessage) throws ServiceException {
     	
     	//返回对象
     	Document respDoc=null;
@@ -275,6 +276,30 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
             newsReplayMessageItem2.setPicUrl("http://ubuntu-sunjiesh.myalauda.cn/360_200.jpg");
             newsReplayMessage.addItem(newsReplayMessageItem2);
             respDoc=WechatMessageConvertDocumentHelper.newsMessageResponseToDocument(newsReplayMessage);
+    	};break;
+    	case GetTemplateMessage:{
+    		WechatUserDto user = new WechatUserDto();
+            user.setOpenId(responseToUserName);
+            user=WechatUserHandler.getUserInfo(user, wechatAccessTokenDao.get());
+            
+            WechatSendTemplateMessage message = new WechatSendTemplateMessage();
+            message.setTemplateId("RhnX8IXCkY2oStIvdTcJcjJDpZcglUUMbeb7dXJ6h1E");
+            message.setUrl("http://www.baidu.com");
+            message.setTopColor("#FF0000");
+            WechatSendTemplateMessage.WechatSendTemplateMessageData messageData1 = message.new WechatSendTemplateMessageData();
+            messageData1.setKeyName("Nickname");
+            messageData1.setValue(user.getNickname());
+            messageData1.setColor("#173177");
+            WechatSendTemplateMessage.WechatSendTemplateMessageData messageData2 = message.new WechatSendTemplateMessageData();
+            messageData2.setKeyName("Time");
+            messageData2.setValue(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            messageData2.setColor("#173177");
+            message.getData().add(messageData1);
+            message.getData().add(messageData2);
+            WechatTemplateMessageHandler.send(user, message, wechatAccessTokenDao.get());
+            WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+    		textMessageResponse.setContent("模板消息已发送");
+    		respDoc=WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
     	};break;
     	default:{
     		respDoc=respError(responseToUserName, responseFromUserName);
