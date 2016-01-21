@@ -67,6 +67,8 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 	private static final String LAST_VIDEO_MESSAGE_MEDIA_ID = "lastVideoMessageMediaId";
 	
 	private static final String LAST_SHORT_VIDEO_MESSAGE_MEDIA_ID = "lastShortVideoMessageMediaId";
+	
+	private static final Long REDIS_SAVE_TIME_OUT=24L;
 
     
     
@@ -151,7 +153,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     	String responseToUserName=imageMessage.getFromUserName();
 		String responseFromUserName=imageMessage.getToUserName();
 		String mediaId=imageMessage.getMediaId();
-		redisWechatMessageDao.save(LAST_IMAGE_MESSAGE_MEDIA_ID, mediaId);
+		redisWechatMessageDao.save(LAST_IMAGE_MESSAGE_MEDIA_ID, mediaId,REDIS_SAVE_TIME_OUT);
 		
 		final String content = "图片已经上传，midiaId为="+mediaId;
 		return replayTextMessage(responseToUserName, responseFromUserName, content);
@@ -162,7 +164,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     	String responseToUserName=voiceMessage.getFromUserName();
 		String responseFromUserName=voiceMessage.getToUserName();
 		String mediaId=voiceMessage.getMediaId();
-		redisWechatMessageDao.save(LAST_VOICE_MESSAGE_MEDIA_ID, mediaId);
+		redisWechatMessageDao.save(LAST_VOICE_MESSAGE_MEDIA_ID, mediaId,REDIS_SAVE_TIME_OUT);
 		String content = "语音已经上传，midiaId为="+mediaId;
 		return replayTextMessage(responseToUserName, responseFromUserName, content);
     }
@@ -174,7 +176,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     	String responseToUserName=videoMessage.getFromUserName();
 		String responseFromUserName=videoMessage.getToUserName();
 		String mediaId=videoMessage.getMediaId();
-		redisWechatMessageDao.save(LAST_VIDEO_MESSAGE_MEDIA_ID, mediaId);
+		redisWechatMessageDao.save(LAST_VIDEO_MESSAGE_MEDIA_ID, mediaId,REDIS_SAVE_TIME_OUT);
 		String content = "视频已经上传，midiaId为="+mediaId;
 		return replayTextMessage(responseToUserName, responseFromUserName, content);
     }
@@ -184,7 +186,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     	String responseToUserName=shortVodeoMessage.getFromUserName();
 		String responseFromUserName=shortVodeoMessage.getToUserName();
 		String mediaId=shortVodeoMessage.getMediaId();
-		redisWechatMessageDao.save(LAST_SHORT_VIDEO_MESSAGE_MEDIA_ID, mediaId);
+		redisWechatMessageDao.save(LAST_SHORT_VIDEO_MESSAGE_MEDIA_ID, mediaId,REDIS_SAVE_TIME_OUT);
 		String content = "视频已经上传，midiaId为="+mediaId;
 		return replayTextMessage(responseToUserName, responseFromUserName, content);
     }

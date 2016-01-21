@@ -1,5 +1,7 @@
 package cn.com.sunjiesh.thirdpartdemo.dao;
 
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,11 @@ public class RedisWechatMessageDao {
 	
 	public void save(String key,String value){
 		stringRedisTemplate.opsForValue().set(key, value);
+		LOGGER.debug(key+" in redis is "+stringRedisTemplate.opsForValue().get(key));
+	}
+	
+	public void save(String key,String value,long timeout){
+		stringRedisTemplate.opsForValue().set(key, value,timeout,TimeUnit.HOURS);
 		LOGGER.debug(key+" in redis is "+stringRedisTemplate.opsForValue().get(key));
 	}
 	
