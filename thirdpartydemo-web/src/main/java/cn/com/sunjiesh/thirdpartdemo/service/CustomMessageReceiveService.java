@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.com.sunjiesh.thirdpartdemo.common.ThirdpartyDemoConstants;
 import cn.com.sunjiesh.thirdpartdemo.common.WechatEventClickMessageEventkeyEnum;
 import cn.com.sunjiesh.thirdpartdemo.dao.RedisWechatMessageDao;
@@ -106,20 +108,20 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
         String fromUserName = textMessage.getToUserName();
 
         String message = textMessage.getContent();
-        final TulingResponse response = new TulingHelper().callTuling(message);
-        int tulingCode = response.getCode();
-        final String content = response.getUrl();
+        final JSONObject response = new TulingHelper().callTuling(message);
+        int tulingCode = response.getIntValue("code");
 		switch (tulingCode) {
             case TulingConstants.TULING_RESPONSE_CODE_TEXT:
             	WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
-        		textMessageResponse.setContent(response.getText());
+        		textMessageResponse.setContent(response.getString("text"));
         		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
             case TulingConstants.TULING_RESPONSE_CODE_LINK:
                 //返回圖片需要處理時間，直接返回NULL值，通過異步進行處理發送消息
                 scheduledThreadPool.submit(() -> {
                     try {
-                        String url = content;
-                        String text = response.getText();
+                        String url = response.getString("url");
+                        String text = response.getString("text");
+                        LOGGER.debug("text="+text);
                         //下載圖片並且上傳到微信上，生成圖文消息
                         File tmpFile = new HttpService().getFileResponseFromHttpGetMethod(url);
                         if (tmpFile != null) {
@@ -138,8 +140,12 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
                     }
                 });
 
-                return replayTextMessage(responseToUserName, responseFromUserName, content);
-           
+                return replayTextMessage(responseToUserName, responseFromUserName,  response.getString("text"));
+            case TulingConstants.TULING_RESPONSE_CODE_NEWS:{
+            	//String url = content;
+                //String text = response.getText();
+                //JSONArray listJsonArr=
+            }
             default:
                 return respError(toUserName, fromUserName);
         }
