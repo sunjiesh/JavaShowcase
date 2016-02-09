@@ -3,7 +3,9 @@ package cn.com.sunjiesh.thirdpartdemo.service;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.com.sunjiesh.thirdpartdemo.common.ThirdpartyDemoConstants;
@@ -23,6 +26,7 @@ import cn.com.sunjiesh.thirdpartdemo.dao.RedisWechatMessageDao;
 import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingConstants;
 import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingHelper;
 import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
+import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingNewsResponse;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingResponse;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
@@ -142,9 +146,44 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
                 return replayTextMessage(responseToUserName, responseFromUserName,  response.getString("text"));
             case TulingConstants.TULING_RESPONSE_CODE_NEWS:{
-            	//String url = content;
-                //String text = response.getText();
-                //JSONArray listJsonArr=
+            	String url = response.getString("url");
+                String text = response.getString("text");
+                JSONArray listJsonArr=response.getJSONArray("list");
+                List<TulingNewsResponse> newsResponseList=new ArrayList<TulingNewsResponse>();
+                for(int listJsonIndex=0;listJsonIndex<listJsonArr.size();listJsonIndex++){
+                	JSONObject jsonObject=listJsonArr.getJSONObject(listJsonIndex);
+                	String name=jsonObject.getString("article");
+                	String icon=jsonObject.getString("icon");
+                	String info=jsonObject.getString("source");
+                	String detailurl=jsonObject.getString("detailurl");
+                	LOGGER.debug("name="+name);
+                	LOGGER.debug("icon="+icon);
+                	LOGGER.debug("info="+info);
+                	LOGGER.debug("detailurl="+detailurl);
+                	
+                	TulingNewsResponse newsResponse=new TulingNewsResponse();
+                	newsResponse.setArticle(name);
+                	newsResponse.setIcon(icon);
+                	newsResponse.setSource(info);
+                	newsResponse.setDetailurl(detailurl);
+                	newsResponseList.add(newsResponse);
+                }
+                
+                //图文消息
+                WechatReceiveReplayNewsMessageResponse newsReplayMessage = new WechatReceiveReplayNewsMessageResponse(responseToUserName, responseFromUserName);
+                for(int index=0;index<Math.min(newsResponseList.size(), 10);index++){
+                	TulingNewsResponse newsResponse=newsResponseList.get(index);
+                	WechatReceiveReplayNewsMessageResponse.WechatReceiveReplayNewsMessageResponseItem newsReplayMessageItem1 = newsReplayMessage.new WechatReceiveReplayNewsMessageResponseItem();
+                    newsReplayMessageItem1.setDescription(newsResponse.getSource());
+                    newsReplayMessageItem1.setTitle(newsResponse.getArticle());
+                    newsReplayMessageItem1.setUrl(newsResponse.getDetailurl());
+                    newsReplayMessageItem1.setPicUrl(newsResponse.getIcon());
+                    newsReplayMessage.addItem(newsReplayMessageItem1);
+                }
+                
+                Document respDoc=WechatMessageConvertDocumentHelper.newsMessageResponseToDocument(newsReplayMessage);
+                return respDoc;
+                
             }
             default:
                 return respError(toUserName, fromUserName);

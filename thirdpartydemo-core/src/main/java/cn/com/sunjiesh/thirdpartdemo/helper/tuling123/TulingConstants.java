@@ -20,4 +20,9 @@ public class TulingConstants {
      * 链接类标题码
      */
     public static final int TULING_RESPONSE_CODE_LINK = 200000;
+    
+    /**
+     * 新闻类标识码
+     */
+    public static final int TULING_RESPONSE_CODE_NEWS=302000;
 }
