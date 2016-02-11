@@ -21,7 +21,8 @@
 		<property name="repeatInterval" value="7200000" />
 	</bean>
 	
-	<bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<!-- 放入JOB工程中实现，后期将删除相关代码 -->
+	<!-- <bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobDetails">
 			<list>
 				<ref bean="wechatAccessTokenJob" />
@@ -31,6 +32,6 @@
 			<list>
 				<ref bean="wechatAccessTokenTrigger" />
 			</list>
-		</property>
-	</bean>
+		</property> 
+	</bean>-->
 </beans>
