@@ -11,6 +11,10 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +130,15 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
                         String url = response.getString("url");
                         String text = response.getString("text");
                         LOGGER.debug("text="+text);
-                        //下載圖片並且上傳到微信上，生成圖文消息
+                        
+                        //判断返回格式内容
+                        HttpResponse httpResponse = new HttpService().getHttpResponseFromHttpGetMethod(url);
+                        Header contentType=httpResponse.getHeaders("Content-Type")[0];
+                        if(contentType.getValue().contains("text/html")){
+                        	LOGGER.debug("返回属于HTML，不进行处理，直接返回URL");
+                        	return replayTextMessage(responseToUserName, responseFromUserName,  text+"，请访问:"+url);
+                        }
+                    	//下載圖片並且上傳到微信上，生成圖文消息
                         File tmpFile = new HttpService().getFileResponseFromHttpGetMethod(url);
                         if (tmpFile != null) {
                             String fileName = tmpFile.getName().toLowerCase();
@@ -139,15 +151,28 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
                             }
 
                         }
+                        
+                        
+                        
                     } catch (ServiceException ex) {
                         LOGGER.error("Server Error", ex);
                     }
+                    return replayTextMessage(responseToUserName, responseFromUserName,  response.getString("text"));
                 });
 
-                return replayTextMessage(responseToUserName, responseFromUserName,  response.getString("text"));
             case TulingConstants.TULING_RESPONSE_CODE_NEWS:{
             	String url = response.getString("url");
                 String text = response.getString("text");
+                if(!response.containsKey("list")){
+                	//判断返回格式内容
+                    HttpResponse httpResponse = new HttpService().getHttpResponseFromHttpGetMethod(url);
+                    Header contentType=httpResponse.getHeaders("Content-Type")[0];
+                    if(contentType.getValue().contains("text/html")){
+                    	LOGGER.debug("返回属于HTML，不进行处理，直接返回URL");
+                    	return replayTextMessage(responseToUserName, responseFromUserName,  text+"，请访问:"+url);
+                    }
+                    return replayTextMessage(responseToUserName, responseFromUserName,  response.getString(text+"，请访问:"+url));
+                }
                 JSONArray listJsonArr=response.getJSONArray("list");
                 List<TulingNewsResponse> newsResponseList=new ArrayList<TulingNewsResponse>();
                 for(int listJsonIndex=0;listJsonIndex<listJsonArr.size();listJsonIndex++){
