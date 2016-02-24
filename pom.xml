@@ -9,7 +9,7 @@
 	<artifactId>thirdpartydemo</artifactId>
 	<packaging>pom</packaging>
 	<version>0.3</version>
-	<name>thirdpartydemo</name>
+	<name>服务调用DEMO</name>
 	<url>http://maven.apache.org</url>
 	
 	<properties>
