@@ -62,6 +62,11 @@ import cn.com.sunjiesh.wechat.model.user.WechatUserDto;
 import cn.com.sunjiesh.wechat.service.AbstractWechatMessageReceiveService;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
+/**
+ * 微信消息服務
+ * @author tom
+ *
+ */
 @Service
 public class CustomMessageReceiveService extends AbstractWechatMessageReceiveService {
 
