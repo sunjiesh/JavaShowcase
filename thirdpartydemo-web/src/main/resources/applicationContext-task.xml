@@ -9,17 +9,17 @@
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 	
 	
-	<bean name="wechatAccessTokenJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	<!--<bean name="wechatAccessTokenJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="wechatAccessTokenService"></property>
 		<property name="targetMethod" value="getAccessTokenAndSaveToLocal"></property>
-	</bean>
+	</bean>  -->
 	
-	<!-- Run the job every 2 hours with initial delay of 60 second -->
+	<!-- Run the job every 2 hours with initial delay of 60 second 
 	<bean id="wechatAccessTokenTrigger"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 		<property name="jobDetail" ref="wechatAccessTokenJob" />
 		<property name="startDelay" value="10000" />
 		<property name="repeatInterval" value="7200000" />
-	</bean>
+	</bean>-->
 	
 	<!-- 放入JOB工程中实现，后期将删除相关代码 -->
 	<!-- <bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
