@@ -14,7 +14,6 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath:applicationContext.xml
-            classpath:applicationContext-task.xml
             classpath:applicationContext-wechat.xml
             classpath:applicationContext-persistment.xml
         </param-value>
