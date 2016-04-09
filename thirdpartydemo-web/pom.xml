@@ -32,6 +32,11 @@
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+		</dependency>
+		
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -118,6 +123,11 @@
 			<version>1.0.16</version>
 		</dependency>
 
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
+		
 
 		
 		<dependency>
