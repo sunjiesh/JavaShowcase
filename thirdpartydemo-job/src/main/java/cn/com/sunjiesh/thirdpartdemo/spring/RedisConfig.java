@@ -1,7 +1,6 @@
 package cn.com.sunjiesh.thirdpartdemo.spring;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -16,8 +15,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @author thinkpad
  *
  */
-@Configuration
-@EnableAutoConfiguration 
+@Configuration 
 public class RedisConfig {
 
 	@Bean
