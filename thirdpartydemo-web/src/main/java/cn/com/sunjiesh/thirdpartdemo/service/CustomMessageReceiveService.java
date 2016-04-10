@@ -64,7 +64,7 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
 /**
  * 微信消息服務
- * @author tom
+ * @author Tom Sun
  *
  */
 @Service
@@ -110,10 +110,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     protected Document messageRecive(WechatNormalTextMessageRequest textMessage) throws ServiceException {
     	String responseToUserName=textMessage.getFromUserName();
 		String responseFromUserName=textMessage.getToUserName();
-		
 		LOGGER.debug("receive a WechatReceiveNormalTextMessage request ");
-
-        LOGGER.debug("receive a messageRecive request ");
         String toUserName = textMessage.getFromUserName();
         String fromUserName = textMessage.getToUserName();
 
