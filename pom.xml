@@ -18,10 +18,9 @@
 	</properties>
 
 	<modules>
-		<module>thirdpartydemo-web</module>
 		<module>thirdpartydemo-core</module>
 		<module>thirdpartydemo-job</module>
-    <module>thirdpartydemo-wechat</module>
+    	<module>thirdpartydemo-wechat</module>
   </modules>
 
 	<repositories>
