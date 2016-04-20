@@ -18,13 +18,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.com.sunjiesh.thirdpartdemo.common.ThirdpartyDemoConstants;
+import cn.com.sunjiesh.thirdpartdemo.common.WechatReceiveMessageConstants;
+import cn.com.sunjiesh.thirdpartdemo.dao.WechatReceiveMessageMapper;
 import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingConstants;
 import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingHelper;
+import cn.com.sunjiesh.thirdpartdemo.model.WechatReceiveMessage;
 import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingNewsResponse;
 import cn.com.sunjiesh.thirdpartydemo.wechat.common.WechatEventClickMessageEventkeyEnum;
@@ -68,6 +72,7 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
  *
  */
 @Service
+@Transactional(rollbackFor={ServiceException.class,Exception.class})
 public class CustomMessageReceiveService extends AbstractWechatMessageReceiveService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomMessageReceiveService.class);
@@ -86,6 +91,9 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     
     @Autowired
     private RedisWechatMessageDao redisWechatMessageDao;
+    
+    @Autowired
+    private WechatReceiveMessageMapper wechatReceiveMessageMapper;
     
     @Autowired
     protected IWechatAccessTokenDao wechatAccessTokenDao;
@@ -108,13 +116,26 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
     @Override
     protected Document messageRecive(WechatNormalTextMessageRequest textMessage) throws ServiceException {
+		LOGGER.debug("receive a WechatReceiveNormalTextMessage request ");
+
     	String responseToUserName=textMessage.getFromUserName();
 		String responseFromUserName=textMessage.getToUserName();
-		LOGGER.debug("receive a WechatReceiveNormalTextMessage request ");
         String toUserName = textMessage.getFromUserName();
         String fromUserName = textMessage.getToUserName();
 
         String message = textMessage.getContent();
+        
+        WechatReceiveMessage wechatReceiveMessage=new WechatReceiveMessage();
+        wechatReceiveMessage.setFromUser(textMessage.getFromUserName());
+        wechatReceiveMessage.setMessageContent(message);
+        wechatReceiveMessage.setMessageType(WechatReceiveMessageConstants.MESSAGE_TYPE_TEXT);
+        wechatReceiveMessage.setStatus(ThirdpartyDemoConstants.STATUS_VALID);
+        wechatReceiveMessage.setCreateTime(new Date());
+        wechatReceiveMessage.setCreateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
+        wechatReceiveMessage.setUpdateTime(new Date());
+        wechatReceiveMessage.setUpdateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
+        wechatReceiveMessageMapper.insert(wechatReceiveMessage);
+        
         final JSONObject response = new TulingHelper().callTuling(message);
         int tulingCode = response.getIntValue("code");
 		switch (tulingCode) {
