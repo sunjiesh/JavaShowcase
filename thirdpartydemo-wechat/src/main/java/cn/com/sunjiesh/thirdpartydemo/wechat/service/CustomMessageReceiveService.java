@@ -124,17 +124,8 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
         String fromUserName = textMessage.getToUserName();
 
         String message = textMessage.getContent();
-        
-        WechatReceiveMessage wechatReceiveMessage=new WechatReceiveMessage();
-        wechatReceiveMessage.setFromUser(textMessage.getFromUserName());
-        wechatReceiveMessage.setMessageContent(message);
-        wechatReceiveMessage.setMessageType(WechatReceiveMessageConstants.MESSAGE_TYPE_TEXT);
-        wechatReceiveMessage.setStatus(ThirdpartyDemoConstants.STATUS_VALID);
-        wechatReceiveMessage.setCreateTime(new Date());
-        wechatReceiveMessage.setCreateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
-        wechatReceiveMessage.setUpdateTime(new Date());
-        wechatReceiveMessage.setUpdateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
-        wechatReceiveMessageMapper.insert(wechatReceiveMessage);
+        String wechatReceiveMessageFromUserName=textMessage.getFromUserName();
+        saveReceiveMessage(wechatReceiveMessageFromUserName, message, WechatReceiveMessageConstants.MESSAGE_TYPE_TEXT);
         
         final JSONObject response = new TulingHelper().callTuling(message);
         int tulingCode = response.getIntValue("code");
@@ -237,6 +228,8 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
         
 		
     }
+
+	
 
     @Override
     protected Document messageRecive(WechatNormalImageMessageRequest imageMessage) throws ServiceException{
@@ -511,5 +504,23 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
 	}
 
+    /**
+     * 保存消息
+     * @param wechatReceiveMessageFromUserName
+     * @param message
+     * @param messageType
+     */
+    public void saveReceiveMessage(String wechatReceiveMessageFromUserName, String message, final String messageType) {
+		WechatReceiveMessage wechatReceiveMessage=new WechatReceiveMessage();
+        wechatReceiveMessage.setFromUser(wechatReceiveMessageFromUserName);
+        wechatReceiveMessage.setMessageContent(message);
+		wechatReceiveMessage.setMessageType(messageType);
+        wechatReceiveMessage.setStatus(ThirdpartyDemoConstants.STATUS_VALID);
+        wechatReceiveMessage.setCreateTime(new Date());
+        wechatReceiveMessage.setCreateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
+        wechatReceiveMessage.setUpdateTime(new Date());
+        wechatReceiveMessage.setUpdateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
+        wechatReceiveMessageMapper.insert(wechatReceiveMessage);
+	}
 	
 }
