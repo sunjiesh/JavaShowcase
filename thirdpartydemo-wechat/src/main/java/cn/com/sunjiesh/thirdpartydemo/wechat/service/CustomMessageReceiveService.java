@@ -301,6 +301,9 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     	LOGGER.debug("EventKey="+eventKey);
     	WechatEventClickMessageEventkeyEnum eventKeyEnum=WechatEventClickMessageEventkeyEnum.valueOf(eventKey);
     	
+    	//保存到DB
+    	saveReceiveMessage(clickMessage.getFromUserName(), clickMessage.getEventKey(), WechatReceiveMessageConstants.MESSAGE_TYPE_CLICK);
+    	
 		switch(eventKeyEnum){
     	case GetTextMessage:{
     		WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
