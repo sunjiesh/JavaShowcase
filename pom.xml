@@ -17,7 +17,8 @@
 		<module>thirdpartydemo-core</module>
 		<module>thirdpartydemo-job</module>
     	<module>thirdpartydemo-wechat</module>
-  	</modules>
+    	<module>thirdpartsamples-wechat</module>
+	</modules>
 
 	<repositories>
 		<repository>
