@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>cn.com.sunjiesh</groupId>
-		<artifactId>project-parent</artifactId>
-		<version>0.2.9</version>
-	</parent>
-	<artifactId>thirdpartydemo</artifactId>
+	<groupId>cn.com.sunjiesh.thirdpartsamples</groupId>
+	<artifactId>thirdpartsamples</artifactId>
 	<packaging>pom</packaging>
 	<version>0.3</version>
 	<name>服务调用DEMO</name>
@@ -21,7 +17,7 @@
 		<module>thirdpartydemo-core</module>
 		<module>thirdpartydemo-job</module>
     	<module>thirdpartydemo-wechat</module>
-  </modules>
+  	</modules>
 
 	<repositories>
 		<repository>
@@ -33,16 +29,41 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>spring-snapshots</id>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<url>http://repo.spring.io/milestone</url>
+		</repository>
 	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<url>http://repo.spring.io/snapshot</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<url>http://repo.spring.io/milestone</url>
+		</pluginRepository>
+	</pluginRepositories>
+
 
 	<dependencies>
 		<dependency>
 			<groupId>cn.com.sunjiesh</groupId>
 			<artifactId>utils-thirdparty</artifactId>
+			<version>${utils.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.com.sunjiesh</groupId>
 			<artifactId>utils-web</artifactId>
+			<version>${utils.version}</version>
 			</dependency>
 		<dependency>
 			<groupId>cn.com.sunjiesh</groupId>
