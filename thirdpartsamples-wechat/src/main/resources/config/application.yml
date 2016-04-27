@@ -1,0 +1,10 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${eureka.client.serviceUrl.defaultZone}
+spring:
+  application:
+    name: thirdpartsamples-wechat
+
+server:
+  port: 10002
