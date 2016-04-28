@@ -1,13 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>cn.com.sunjiesh</groupId>
-    <artifactId>thirdpartydemo</artifactId>
-    <version>0.3</version>
-  </parent>
-  <artifactId>thirdpartydemo-core</artifactId>
-  <name>thirdpartydemo-core</name>
-  <description>thirdpartydemo-core</description>
-  <packaging>jar</packaging>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>cn.com.sunjiesh.thirdpartsamples</groupId>
+		<artifactId>thirdpartsamples</artifactId>
+		<version>0.3</version>
+	</parent>
+	<artifactId>thirdpartydemo-core</artifactId>
+	<name>thirdpartydemo-core</name>
+	<description>thirdpartydemo-core</description>
+	<packaging>jar</packaging>
+
 </project>

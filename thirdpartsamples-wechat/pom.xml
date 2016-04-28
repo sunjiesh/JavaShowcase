@@ -19,6 +19,13 @@
 
 	<dependencies>
 
+
+		<dependency>
+			<groupId>cn.com.sunjiesh.thirdpartsamples</groupId>
+			<artifactId>thirdpartydemo-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
