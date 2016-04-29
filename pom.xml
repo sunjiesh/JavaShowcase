@@ -11,12 +11,12 @@
 	<properties>
 		<utils.version>0.4.6</utils.version>
 		<wechat.version>0.8.6</wechat.version>
+		<spring.version>4.2.5.RELEASE</spring.version>
 	</properties>
 
 	<modules>
 		<module>thirdpartydemo-core</module>
 		<module>thirdpartydemo-job</module>
-    	<module>thirdpartydemo-wechat</module>
     	<module>thirdpartsamples-wechat</module>
 	</modules>
 
