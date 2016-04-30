@@ -25,7 +25,6 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.com.sunjiesh.thirdpartdemo.common.ThirdpartyDemoConstants;
 import cn.com.sunjiesh.thirdpartdemo.common.WechatReceiveMessageConstants;
-import cn.com.sunjiesh.thirdpartdemo.dao.WechatReceiveMessageMapper;
 import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingConstants;
 import cn.com.sunjiesh.thirdpartdemo.helper.tuling123.TulingHelper;
 import cn.com.sunjiesh.thirdpartdemo.model.WechatReceiveMessage;
@@ -33,6 +32,7 @@ import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingNewsResponse;
 import cn.com.sunjiesh.thirdpartsamples.wechat.common.WechatEventClickMessageEventkeyEnum;
 import cn.com.sunjiesh.thirdpartsamples.wechat.dao.RedisWechatMessageDao;
+import cn.com.sunjiesh.thirdpartsamples.wechat.dao.WechatReceiveMessageMapper;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
 import cn.com.sunjiesh.wechat.entity.message.WechatSendTemplateMessage;
@@ -92,7 +92,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     @Autowired
     private RedisWechatMessageDao redisWechatMessageDao;
     
-    //@Autowired
+    @Autowired
     private WechatReceiveMessageMapper wechatReceiveMessageMapper;
     
     @Autowired
