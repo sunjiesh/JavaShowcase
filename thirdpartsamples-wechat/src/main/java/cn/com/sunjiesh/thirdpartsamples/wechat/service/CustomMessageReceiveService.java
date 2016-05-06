@@ -32,7 +32,6 @@ import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingNewsResponse;
 import cn.com.sunjiesh.thirdpartsamples.wechat.common.WechatEventClickMessageEventkeyEnum;
 import cn.com.sunjiesh.thirdpartsamples.wechat.dao.RedisWechatMessageDao;
-import cn.com.sunjiesh.thirdpartsamples.wechat.dao.WechatReceiveMessageMapper;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
 import cn.com.sunjiesh.wechat.entity.message.WechatSendTemplateMessage;
@@ -92,8 +91,8 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     @Autowired
     private RedisWechatMessageDao redisWechatMessageDao;
     
-    @Autowired
-    private WechatReceiveMessageMapper wechatReceiveMessageMapper;
+//    @Autowired
+//    private WechatReceiveMessageMapper wechatReceiveMessageMapper;
     
     @Autowired
     protected IWechatAccessTokenDao wechatAccessTokenDao;
@@ -523,7 +522,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
         wechatReceiveMessage.setCreateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
         wechatReceiveMessage.setUpdateTime(new Date());
         wechatReceiveMessage.setUpdateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
-        wechatReceiveMessageMapper.insert(wechatReceiveMessage);
+        //wechatReceiveMessageMapper.insert(wechatReceiveMessage);
 	}
 	
 }

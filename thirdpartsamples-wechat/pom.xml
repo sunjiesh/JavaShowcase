@@ -12,8 +12,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>4.2.5.RELEASE</spring.version>
-		<mybatis.version>3.3.1</mybatis.version>
-    	<mybatis-spring.version>1.2.5</mybatis-spring.version>
+		<mybatis.version>3.2.8</mybatis.version>
+    	<mybatis-spring.version>1.2.2</mybatis-spring.version>
 		<jettyVersion>7.2.0.v20101020</jettyVersion>
 	</properties>
 	
@@ -111,11 +111,17 @@
 <!-- 			<artifactId>jackson-dataformat-yaml</artifactId> -->
 <!-- 		</dependency> -->
 
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>1.0.2</version>
-		</dependency>
+		<!-- myBatis -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>${mybatis-spring.version}</version>
+        </dependency>
 		
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -123,6 +129,17 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+		</dependency>
+		
+		
 		
 
 	</dependencies>
