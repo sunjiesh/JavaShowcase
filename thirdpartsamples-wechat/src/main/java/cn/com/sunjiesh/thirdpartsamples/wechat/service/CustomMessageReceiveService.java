@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -32,6 +31,7 @@ import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.response.tuling.TulingNewsResponse;
 import cn.com.sunjiesh.thirdpartsamples.wechat.common.WechatEventClickMessageEventkeyEnum;
 import cn.com.sunjiesh.thirdpartsamples.wechat.dao.RedisWechatMessageDao;
+import cn.com.sunjiesh.thirdpartsamples.wechat.dao.WechatReceiveMessageMapper;
 import cn.com.sunjiesh.utils.thirdparty.base.HttpService;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
 import cn.com.sunjiesh.wechat.entity.message.WechatSendTemplateMessage;
@@ -71,7 +71,7 @@ import cn.com.sunjiesh.xcutils.common.base.ServiceException;
  *
  */
 @Service
-@Transactional(rollbackFor={ServiceException.class,Exception.class})
+//@Transactional(rollbackFor={ServiceException.class,Exception.class})
 public class CustomMessageReceiveService extends AbstractWechatMessageReceiveService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomMessageReceiveService.class);
@@ -91,8 +91,8 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
     @Autowired
     private RedisWechatMessageDao redisWechatMessageDao;
     
-//    @Autowired
-//    private WechatReceiveMessageMapper wechatReceiveMessageMapper;
+    @Autowired
+    private WechatReceiveMessageMapper wechatReceiveMessageMapper;
     
     @Autowired
     protected IWechatAccessTokenDao wechatAccessTokenDao;
@@ -522,7 +522,7 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
         wechatReceiveMessage.setCreateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
         wechatReceiveMessage.setUpdateTime(new Date());
         wechatReceiveMessage.setUpdateUser(ThirdpartyDemoConstants.CREATE_USER_THIRDPARTYDEMO_WEB);
-        //wechatReceiveMessageMapper.insert(wechatReceiveMessage);
+        wechatReceiveMessageMapper.insert(wechatReceiveMessage);
 	}
 	
 }
