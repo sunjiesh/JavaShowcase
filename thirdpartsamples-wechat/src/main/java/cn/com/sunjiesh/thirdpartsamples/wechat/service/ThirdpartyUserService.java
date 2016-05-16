@@ -6,21 +6,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.sunjiesh.thirdpartdemo.model.WechatUser;
 import cn.com.sunjiesh.thirdpartdemo.model.WechatUserExample;
+import cn.com.sunjiesh.thirdpartsamples.wechat.dao.WechatUserMapper;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
 @Service
 @Transactional(rollbackFor={ServiceException.class,Exception.class})
 public class ThirdpartyUserService {
 	
-//	@Autowired
-//	private WechatUserMapper wechatUserMapper;
+	@Autowired
+	private WechatUserMapper wechatUserMapper;
 
 	/**
 	 * 新建微信用戶數據
 	 * @param wechatUser
 	 */
 	public void save(WechatUser wechatUser){
-		//wechatUserMapper.insert(wechatUser);
+		wechatUserMapper.insert(wechatUser);
 	}
 	
 	/**
