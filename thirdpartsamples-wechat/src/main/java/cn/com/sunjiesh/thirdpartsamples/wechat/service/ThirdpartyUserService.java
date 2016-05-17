@@ -32,6 +32,6 @@ public class ThirdpartyUserService {
 		WechatUserExample example=new WechatUserExample();
 		WechatUserExample.Criteria criteria= example.createCriteria();
 		criteria.andOpenIdEqualTo(wechatUser.getOpenId());
-		//wechatUserMapper.deleteByExample(example);
+		wechatUserMapper.deleteByExample(example);
 	}
 }

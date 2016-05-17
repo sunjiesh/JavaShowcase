@@ -44,6 +44,7 @@ public class ThirdpartyUserServiceTest {
 	public void delete(){
 		WechatUser wechatUser=new WechatUser();
 		wechatUser.setCity("shanghai");
+		wechatUser.setOpenId("fa");
 		thirdpartyUserService.delete(wechatUser);
 	}
 }
