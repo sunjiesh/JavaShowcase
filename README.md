@@ -1,2 +1,2 @@
 # thirdpartydemo
-第三方系统对接Demo，目前只支持微信（<a href="https://github.com/sunjiesh/wechat">https://github.com/sunjiesh/wechat</a>）
+第三方系统对接Demo，所有代码删除，代码即将重新实现。
