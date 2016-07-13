@@ -118,6 +118,8 @@
 	</build>
 
 	<modules>
+	<module>thirdservice-core</module>
+	<module>thirdservice-wechat</module>
 	</modules>
 	
 	<profiles>
