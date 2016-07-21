@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.qq.weixin.mp.aes.AesException;
 
+import cn.com.sunjiesh.thirdservice.wechat.service.CustomMessageReceiveService;
 import cn.com.sunjiesh.wechat.handler.WechatValidHandler;
 import cn.com.sunjiesh.xcutils.common.base.ServiceException;
 
@@ -31,6 +33,8 @@ public class WechatController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WechatController.class);
 	
+	@Autowired
+	private CustomMessageReceiveService messageReceiveService;
 	
 	@RequestMapping(value = "/receive.do", method = RequestMethod.GET)
 	public String valid(@RequestParam("timestamp") String timestamp,
@@ -65,9 +69,15 @@ public class WechatController {
 		}
 		LOGGER.debug("requestPart=" + requestBody);
 		LOGGER.debug("contentType=" + contentType);
-		//String respXml=messageReceiveService.messageReceive(requestBody,queryParams);
-//			LOGGER.debug("respXml="+respXml);
-//			super.responseXml(response,respXml);
-		return "XXXXX";
+		String respXml = null;
+		try {
+			respXml = messageReceiveService.messageReceive(requestBody,queryParams);
+		} catch (ServiceException | AesException e) {
+			e.printStackTrace();
+			LOGGER.error("接收微信消息处理失败", e);
+		}
+		LOGGER.debug("respXml="+respXml);
+//		super.responseXml(response,respXml);
+		return respXml;
 	} 
 }
