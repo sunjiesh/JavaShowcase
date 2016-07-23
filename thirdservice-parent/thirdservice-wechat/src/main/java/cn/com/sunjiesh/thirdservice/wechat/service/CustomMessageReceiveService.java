@@ -10,6 +10,11 @@ import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import cn.com.sunjiesh.thirdservice.wechat.common.WechatEventClickMessageEventkeyEnum;
@@ -71,11 +76,40 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 	@Autowired
 	protected IWechatAccessTokenDao wechatAccessTokenDao;
 	
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+	
 //	@Autowired
 //    private ThirdpartyUserService thirdpartyUserService;
 
     private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
+    
+    
 	
+	@Override
+	protected Document messageReceive(Document doc4j) throws ServiceException {
+		Document respDoc=super.messageReceive(doc4j);
+		//保存接收与发送消息，暂时存入Reids中
+		stringRedisTemplate.execute(new RedisCallback<Long>(){
+
+			@Override
+			public Long doInRedis(RedisConnection connection) throws DataAccessException {
+				StringRedisConnection jedis = (StringRedisConnection)connection;
+				jedis.select(1);
+				String key=System.currentTimeMillis()+"-receive";
+				jedis.set(key, doc4j.asXML());
+				if(respDoc!=null){
+					key=System.currentTimeMillis()+"-resp";
+					jedis.set(key, respDoc.asXML());
+				}
+				
+				return null;
+			}
+			
+		});
+		return respDoc;
+	}
+
 	@Override
 	protected Document messageReceive(WechatEventLocationSelectMessageRequest wechatMessage) {
 		// TODO Auto-generated method stub
