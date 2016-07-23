@@ -1,11 +1,28 @@
 package cn.com.sunjiesh.thirdservice.wechat.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
 import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +34,18 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.com.sunjiesh.thirdservice.wechat.common.WechatEventClickMessageEventkeyEnum;
 import cn.com.sunjiesh.thirdservice.wechat.common.WechatReceiveMessageConstants;
 import cn.com.sunjiesh.thirdservice.wechat.dao.RedisWechatMessageDao;
+import cn.com.sunjiesh.thirdservice.wechat.domain.response.TulingNewsResponse;
+import cn.com.sunjiesh.thirdservice.wechat.helper.tuling123.TulingConstants;
+import cn.com.sunjiesh.thirdservice.wechat.helper.tuling123.TulingHelper;
 import cn.com.sunjiesh.wechat.dao.IWechatAccessTokenDao;
 import cn.com.sunjiesh.wechat.entity.message.WechatSendTemplateMessage;
+import cn.com.sunjiesh.wechat.handler.WechatMediaHandler;
 import cn.com.sunjiesh.wechat.handler.WechatTemplateMessageHandler;
 import cn.com.sunjiesh.wechat.handler.WechatUserHandler;
 import cn.com.sunjiesh.wechat.helper.WechatMessageConvertDocumentHelper;
@@ -42,6 +66,7 @@ import cn.com.sunjiesh.wechat.model.request.message.WechatNormalShortvideoMessag
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalTextMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalVideoMessageRequest;
 import cn.com.sunjiesh.wechat.model.request.message.WechatNormalVoiceMessageRequest;
+import cn.com.sunjiesh.wechat.model.response.media.WechatUploadMediaResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayImageMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayNewsMessageResponse;
 import cn.com.sunjiesh.wechat.model.response.message.WechatReceiveReplayTextMessageResponse;
@@ -118,8 +143,125 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
 	@Override
 	protected Document messageRecive(WechatNormalTextMessageRequest textMessage) throws ServiceException {
-		// TODO Auto-generated method stub
-		return null;
+		LOGGER.debug("receive a WechatReceiveNormalTextMessage request ");
+
+    	String responseToUserName=textMessage.getFromUserName();
+		String responseFromUserName=textMessage.getToUserName();
+        String toUserName = textMessage.getFromUserName();
+        String fromUserName = textMessage.getToUserName();
+
+        String message = textMessage.getContent();
+        String wechatReceiveMessageFromUserName=textMessage.getFromUserName();
+        saveReceiveMessage(wechatReceiveMessageFromUserName, message, WechatReceiveMessageConstants.MESSAGE_TYPE_TEXT);
+        
+        final JSONObject response = new TulingHelper().callTuling(message);
+        int tulingCode = response.getIntValue("code");
+		switch (tulingCode) {
+            case TulingConstants.TULING_RESPONSE_CODE_TEXT:
+            	WechatReceiveReplayTextMessageResponse textMessageResponse=new WechatReceiveReplayTextMessageResponse(responseToUserName, responseFromUserName);
+        		textMessageResponse.setContent(response.getString("text"));
+        		return WechatMessageConvertDocumentHelper.textMessageResponseToDocument(textMessageResponse);
+            case TulingConstants.TULING_RESPONSE_CODE_LINK:
+                //返回圖片需要處理時間，直接返回NULL值，通過異步進行處理發送消息
+                scheduledThreadPool.submit(() -> {
+                    try {
+                        String url = response.getString("url");
+                        String text = response.getString("text");
+                        LOGGER.debug("text="+text);
+                        
+                        //判断返回格式内容
+                        HttpClient httpClient=HttpClients.createDefault();
+                        HttpGet httGet=new HttpGet(url);
+                        HttpResponse httpResponse = httpClient.execute(httGet);
+                        Header contentType=httpResponse.getHeaders("Content-Type")[0];
+                        if(contentType.getValue().contains("text/html")){
+                        	LOGGER.debug("返回属于HTML，不进行处理，直接返回URL");
+                        	return replayTextMessage(responseToUserName, responseFromUserName,  text+"，请访问:"+url);
+                        }
+                    	//下載圖片並且上傳到微信上，生成圖文消息
+                        File tmpFile = this.getFileResponseFromHttpGetMethod(httpResponse);
+                        if (tmpFile != null) {
+                            String fileName = tmpFile.getName().toLowerCase();
+                            String fileType = fileName.substring(fileName.lastIndexOf(".") + 1);
+                            if (fileType.contains("jpg") || fileType.contains("jpeg") || fileType.contains("png")) {
+                                //僅支持的圖片類型
+                                WechatUploadMediaResponse uploadMediaResponse = WechatMediaHandler.uploadMedia(tmpFile, "image", wechatAccessTokenDao.get());
+                                String mediaId = uploadMediaResponse.getMediaId();
+                                LOGGER.debug("微信臨時圖片素材上傳成功，mediaId=" + mediaId);
+                            }
+
+                        }
+                        
+                        
+                        
+                    } catch (ServiceException ex) {
+                        LOGGER.error("Server Error", ex);
+                    }
+                    return replayTextMessage(responseToUserName, responseFromUserName,  response.getString("text"));
+                });
+
+            case TulingConstants.TULING_RESPONSE_CODE_NEWS:{
+            	String url = response.getString("url");
+                String text = response.getString("text");
+                if(!response.containsKey("list")){
+                	//判断返回格式内容
+                	HttpClient httpClient=HttpClients.createDefault();
+                    HttpGet httGet=new HttpGet(url);
+                    HttpResponse httpResponse = null;
+					try {
+						httpResponse = httpClient.execute(httGet);
+						Header contentType=httpResponse.getHeaders("Content-Type")[0];
+	                    if(contentType.getValue().contains("text/html")){
+	                    	LOGGER.debug("返回属于HTML，不进行处理，直接返回URL");
+	                    	return replayTextMessage(responseToUserName, responseFromUserName,  text+"，请访问:"+url);
+	                    }
+	                    return replayTextMessage(responseToUserName, responseFromUserName,  response.getString(text+"，请访问:"+url));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                  
+                }
+                JSONArray listJsonArr=response.getJSONArray("list");
+                List<TulingNewsResponse> newsResponseList=new ArrayList<TulingNewsResponse>();
+                for(int listJsonIndex=0;listJsonIndex<listJsonArr.size();listJsonIndex++){
+                	JSONObject jsonObject=listJsonArr.getJSONObject(listJsonIndex);
+                	String name=jsonObject.getString("article");
+                	String icon=jsonObject.getString("icon");
+                	String info=jsonObject.getString("source");
+                	String detailurl=jsonObject.getString("detailurl");
+                	LOGGER.debug("name="+name);
+                	LOGGER.debug("icon="+icon);
+                	LOGGER.debug("info="+info);
+                	LOGGER.debug("detailurl="+detailurl);
+                	
+                	TulingNewsResponse newsResponse=new TulingNewsResponse();
+                	newsResponse.setArticle(name);
+                	newsResponse.setIcon(icon);
+                	newsResponse.setSource(info);
+                	newsResponse.setDetailurl(detailurl);
+                	newsResponseList.add(newsResponse);
+                }
+                
+                //图文消息
+                WechatReceiveReplayNewsMessageResponse newsReplayMessage = new WechatReceiveReplayNewsMessageResponse(responseToUserName, responseFromUserName);
+                for(int index=0;index<Math.min(newsResponseList.size(), 10);index++){
+                	TulingNewsResponse newsResponse=newsResponseList.get(index);
+                	WechatReceiveReplayNewsMessageResponse.WechatReceiveReplayNewsMessageResponseItem newsReplayMessageItem1 = newsReplayMessage.new WechatReceiveReplayNewsMessageResponseItem();
+                    newsReplayMessageItem1.setDescription(newsResponse.getSource());
+                    newsReplayMessageItem1.setTitle(newsResponse.getArticle());
+                    newsReplayMessageItem1.setUrl(newsResponse.getDetailurl());
+                    newsReplayMessageItem1.setPicUrl(newsResponse.getIcon());
+                    newsReplayMessage.addItem(newsReplayMessageItem1);
+                }
+                
+                Document respDoc=WechatMessageConvertDocumentHelper.newsMessageResponseToDocument(newsReplayMessage);
+                return respDoc;
+                
+            }
+            default:
+                return respError(toUserName, fromUserName);
+        }
 	}
 
 	@Override
@@ -333,5 +475,66 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
      */
     public void saveReceiveMessage(String wechatReceiveMessageFromUserName, String message, final String messageType) {
 		//TODO need to save 
+	}
+    
+    /**
+	 * 下载文件
+	 * @param httpResponse HttpResponse对象
+	 * @return
+	 * @throws ServiceException
+	 */
+	public File getFileResponseFromHttpGetMethod(HttpResponse httpResponse)
+			throws ServiceException {
+		File file=null;
+		try {
+			StatusLine httpStatusLine = httpResponse.getStatusLine();
+			
+			int statusCode = httpStatusLine.getStatusCode();
+			if (statusCode != HttpStatus.SC_OK) {
+				throw new ServiceException("调用服务失败");
+			}
+			//判断Content-disposition，是否为流数据
+			if(!httpResponse.containsHeader("Content-disposition")){
+				throw new ServiceException("调用服务失败，无法下载文件");
+			}
+			Header contentDisposition=httpResponse.getHeaders("Content-disposition")[0];
+			String contentDispositionValue=contentDisposition.getValue();
+			String fileName=contentDispositionValue.replace("attachment; filename=\"", "");
+			fileName=fileName.replace("\"", "");
+			
+			HttpEntity httpEntity = httpResponse.getEntity();
+			
+		    InputStream is=httpEntity.getContent();
+			if(!StringUtils.isEmpty(fileName)){
+				//下载文件，如果文件存在，则删除重新生成文件
+				file=new File("/var/tmp",fileName);
+				if(file.exists()){
+					file.delete();
+				}
+				FileOutputStream fos=new FileOutputStream(file,false);
+				FileChannel fileChannel = fos.getChannel();
+			    ByteBuffer byteBuffer = null;
+			    byte[] tempBytes=new byte[4096];
+			    while(is.read(tempBytes)>0){
+			    	byteBuffer = ByteBuffer.wrap(tempBytes);
+			        fileChannel.write(byteBuffer);         
+			    }
+			    if(fos!=null){
+			    	fos.close();
+			    }
+			    fileChannel.close();
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+			throw new ServiceException("调用服务失败，无法下载文件");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			throw new ServiceException("调用服务失败，无法下载文件");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new ServiceException("调用服务失败，无法下载文件");
+		}
+		
+		return file;
 	}
 }
