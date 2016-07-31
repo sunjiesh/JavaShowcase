@@ -54,32 +54,33 @@ public class WechatController {
 	public String receive(@RequestHeader("Content-Type") String contentType,
 			HttpServletRequest request,
 			@RequestBody String requestBody) {
-		LOGGER.debug("Receive a post requeset");
-		Map<String,String> queryParams=new HashMap<String,String>();
-		String requestQueryString=request.getQueryString();
-		LOGGER.debug("requestQueryString="+requestQueryString);
-		if(!StringUtils.isEmpty(requestQueryString)){
-			String[] queryStringArr=requestQueryString.split("&");
-			for(String queryString:queryStringArr){
-				if(queryString.contains("=")){
-					String[] paramKeyAndValue=queryString.split("=");
-					String paramKey=paramKeyAndValue[0];
-					String paramValue=paramKeyAndValue[1];
-					queryParams.put(paramKey, paramValue);
+		
+		try {
+			LOGGER.debug("Receive a post requeset");
+			Map<String,String> queryParams=new HashMap<String,String>();
+			String requestQueryString=request.getQueryString();
+			LOGGER.debug("requestQueryString="+requestQueryString);
+			if(!StringUtils.isEmpty(requestQueryString)){
+				String[] queryStringArr=requestQueryString.split("&");
+				for(String queryString:queryStringArr){
+					if(queryString.contains("=")){
+						String[] paramKeyAndValue=queryString.split("=");
+						String paramKey=paramKeyAndValue[0];
+						String paramValue=paramKeyAndValue[1];
+						queryParams.put(paramKey, paramValue);
+					}
 				}
 			}
-		}
-		LOGGER.debug("requestPart=" + requestBody);
-		LOGGER.debug("contentType=" + contentType);
-		String respXml = null;
-		try {
-			respXml = messageReceiveService.messageReceive(requestBody,queryParams);
+			LOGGER.debug("requestPart=" + requestBody);
+			LOGGER.debug("contentType=" + contentType);
+			String respXml = messageReceiveService.messageReceive(requestBody,queryParams);
+			LOGGER.debug("respXml="+respXml);
+//			super.responseXml(response,respXml);
+			return respXml;
 		} catch (ServiceException | AesException e) {
 			e.printStackTrace();
 			LOGGER.error("接收微信消息处理失败", e);
 		}
-		LOGGER.debug("respXml="+respXml);
-//		super.responseXml(response,respXml);
-		return respXml;
+		return "";
 	} 
 }
