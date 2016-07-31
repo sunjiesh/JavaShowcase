@@ -80,6 +80,9 @@ public class WechatController {
 		} catch (ServiceException | AesException e) {
 			e.printStackTrace();
 			LOGGER.error("接收微信消息处理失败", e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.error("接收微信消息处理失败", e);
 		}
 		return "";
 	} 
