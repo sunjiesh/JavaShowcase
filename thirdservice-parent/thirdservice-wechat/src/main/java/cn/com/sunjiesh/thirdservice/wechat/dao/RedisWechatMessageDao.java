@@ -1,7 +1,5 @@
 package cn.com.sunjiesh.thirdservice.wechat.dao;
 
-import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
