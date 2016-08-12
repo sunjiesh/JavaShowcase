@@ -266,8 +266,13 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
 	@Override
 	protected Document messageRecive(WechatNormalImageMessageRequest imageMessage) throws ServiceException {
-		// TODO Auto-generated method stub
-		return null;
+		String responseToUserName=imageMessage.getFromUserName();
+		String responseFromUserName=imageMessage.getToUserName();
+		String mediaId=imageMessage.getMediaId();
+		redisWechatMessageDao.save(LAST_IMAGE_MESSAGE_MEDIA_ID, mediaId,REDIS_SAVE_TIME_OUT);
+		
+		final String content = "图片已经上传，midiaId为="+mediaId;
+		return replayTextMessage(responseToUserName, responseFromUserName, content);
 	}
 
 	@Override
