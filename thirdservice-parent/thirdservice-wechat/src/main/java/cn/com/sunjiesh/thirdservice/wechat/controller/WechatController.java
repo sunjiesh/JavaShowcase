@@ -37,6 +37,29 @@ public class WechatController {
 	@Autowired
 	private CustomMessageReceiveService messageReceiveService;
 	
+	/**
+	 * 
+	 * @api {get} /wechat/receive.do Valid
+	 * @apiName Valid
+	 * @apiGroup wechat
+	 * @apiDescription 验证
+	 * @apiVersion 1.0.0
+	 * 
+	 * @apiExample {curl} Example usage:
+	 * 	curl -i "http://localhost:18081/wechat/receive.do?timestamp=1469112344&nonce=2096446109&echostr=6272519237797280058&signature=57277cb1d4bc60698cfdf079982c6e99d52f1836"
+	 * @apiParam {String} timestamp	时间戳
+	 * @apiParam {String} nonce   随机数
+	 * @apiParam {String} echostr   随机字符串
+	 * @apiParam {String} signature   微信加密签名 
+	 * 
+	 * @apiSuccess {String} echostr 随机字符串
+	 * @apiSuccessExample {json} 正确返回:
+	 * HTTP/1.1 200 OK
+	 * Content-Type: text/plain;charset=UTF-8
+	 * 6272519237797280058
+
+	 * 
+	 */
 	@RequestMapping(value = "/receive.do", method = RequestMethod.GET)
 	public String valid(@RequestParam("timestamp") String timestamp,
 			@RequestParam("echostr") String echoStr,
