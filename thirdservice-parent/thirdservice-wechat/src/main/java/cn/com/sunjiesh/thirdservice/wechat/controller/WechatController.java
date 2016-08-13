@@ -53,7 +53,7 @@ public class WechatController {
 	 * @apiParam {String} signature   微信加密签名 
 	 * 
 	 * @apiSuccess {String} echostr 随机字符串
-	 * @apiSuccessExample {json} 正确返回:
+	 * @apiSuccessExample {text} 正确返回:
 	 * HTTP/1.1 200 OK
 	 * Content-Type: text/plain;charset=UTF-8
 	 * 6272519237797280058
@@ -72,6 +72,33 @@ public class WechatController {
 		return responseStr;
 	}
 	
+	/**
+	 * 
+	 * @api {post} /wechat/receive.do Receive
+	 * @apiName Receive
+	 * @apiGroup wechat
+	 * @apiDescription 接收消息
+	 * @apiVersion 1.0.0
+	 * 
+	 * @apiExample {curl} Example usage:
+	 * 	curl -i -X POST "http://localhost:18081/wechat/receive.do?signature=04c790ff9b319a4d3a7889d23002fcbdbeff4c0f&timestamp=1469113396&nonce=822252680&openid=oiY-ExO09BRAH3kP80a_l438aBwQ" --data '<xml><ToUserName><![CDATA[gh_554f61b4d4c8]]></ToUserName><FromUserName><![CDATA[oiY-ExO09BRAH3kP80a_l438aBwQ]]></FromUserName><CreateTime>1469113396</CreateTime><MsgType><![CDATA[event]]></MsgType><Event><![CDATA[CLICK]]></Event><EventKey><![CDATA[GetTemplateMessage]]></EventKey></xml>' --header "Content-Type:text/xml"
+	 * @apiParam {String} signature	微信加密签名
+	 * @apiParam {String} timestamp   时间戳
+	 * @apiParam {String} nonce   随机数
+	 * @apiParam {String} openid   随机字符串
+	 * @apiParam {String} requestBody   XML文档
+	 * 
+	 * @apiParamExample {json} Request-Example: 
+	 * &lt;xml&gt;&lt;ToUserName&gt;&lt;![CDATA[gh_554f61b4d4c8]]&gt;&lt;/ToUserName&gt;&lt;FromUserName&gt;&lt;![CDATA[oiY-ExO09BRAH3kP80a_l438aBwQ]]&gt;&lt;/FromUserName&gt;&lt;CreateTime&gt;1469113396&lt;/CreateTime&gt;&lt;MsgType&gt;&lt;![CDATA[event]]&gt;&lt;/MsgType&gt;&lt;Event&gt;&lt;![CDATA[CLICK]]&gt;&lt;/Event&gt;&lt;EventKey&gt;&lt;![CDATA[GetTemplateMessage]]&gt;&lt;/EventKey&gt;&lt;/xml&gt;
+	 * 
+	 * @apiSuccess {String} xml xml文档
+	 * 
+	 * @apiSuccessExample {xml} 正确返回:
+	 * HTTP/1.1 200 OK
+	 * Content-Type: text/plain;charset=UTF-8
+	 * &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+	 * &lt;xml&gt;&lt;ToUserName&gt;oiY-ExO09BRAH3kP80a_l438aBwQ&lt;/ToUserName&gt;&lt;FromUserName&gt;gh_554f61b4d4c8&lt;/FromUserName&gt;&lt;CreateTime&gt;1470407769120&lt;/CreateTime&gt;&lt;MsgType&gt;text&lt;/MsgType&gt;&lt;Content&gt;模板消息已发送&lt;/Content&gt;&lt;/xml&gt;
+	 */
 	@RequestMapping(value = "/receive.do", method = RequestMethod.POST)
 	@ResponseBody
 	public String receive(@RequestHeader("Content-Type") String contentType,
