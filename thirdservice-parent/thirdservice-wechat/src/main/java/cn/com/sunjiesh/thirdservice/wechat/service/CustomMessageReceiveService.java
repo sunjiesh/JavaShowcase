@@ -277,8 +277,12 @@ public class CustomMessageReceiveService extends AbstractWechatMessageReceiveSer
 
 	@Override
 	protected Document messageRecive(WechatNormalVoiceMessageRequest voiceMessage) {
-		// TODO Auto-generated method stub
-		return null;
+		String responseToUserName=voiceMessage.getFromUserName();
+		String responseFromUserName=voiceMessage.getToUserName();
+		String mediaId=voiceMessage.getMediaId();
+		redisWechatMessageDao.save(LAST_VOICE_MESSAGE_MEDIA_ID, mediaId,REDIS_SAVE_TIME_OUT);
+		String content = "语音已经上传，midiaId为="+mediaId;
+		return replayTextMessage(responseToUserName, responseFromUserName, content);
 	}
 
 	@Override
