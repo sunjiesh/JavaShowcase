@@ -13,6 +13,7 @@
 
 	<modules>
 		<module>mqttshowcase</module>
+		<module>payment</module>
 	</modules>
 
 	<build>
