@@ -21,28 +21,10 @@ public class MqttPubApp {
 	}
 
 	public static void pubMessage(int messageSize) {
-		for(int index=0;index<messageSize;index++){
-			
-			try {
-				String broker = "tcp://localhost:8883";
-				MqttClient mqttClient = new MqttClient(broker, MqttClient.generateClientId());
-				mqttClient.connect();
-				String mqttPayloadStr = "hello world!"+UUID.randomUUID().toString();
-				MqttMessage message = new MqttMessage();
-				message.setPayload(mqttPayloadStr.getBytes());
-				mqttClient.publish("test", message);
-				mqttClient.disconnect();
-			} catch (MqttException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	public static void pubMessageWithOneClient(int messageSize) {
-
+		String broker = "tcp://localhost:8883";
+		MqttClient mqttClient = null;
 		try {
-			String broker = "tcp://localhost:8883";
-			MqttClient mqttClient = new MqttClient(broker, MqttClient.generateClientId());
+			mqttClient = new MqttClient(broker, MqttClient.generateClientId());
 			mqttClient.connect();
 			for (int index = 0; index < messageSize; index++) {
 				String mqttPayloadStr = "hello world!" + UUID.randomUUID().toString();
@@ -50,12 +32,44 @@ public class MqttPubApp {
 				message.setPayload(mqttPayloadStr.getBytes());
 				mqttClient.publish("test", message);
 			}
-
 			mqttClient.disconnect();
 		} catch (MqttException e) {
 			e.printStackTrace();
+		} finally {
+			if (mqttClient != null) {
+				try {
+					mqttClient.disconnect();
+				} catch (MqttException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-
+	}
+	
+	public static void pubMessageWithOneClient(int messageSize) {
+		String broker = "tcp://localhost:8883";
+		MqttClient mqttClient = null;
+		try {
+			mqttClient = new MqttClient(broker, MqttClient.generateClientId());
+			mqttClient.connect();
+			for (int index = 0; index < messageSize; index++) {
+				String mqttPayloadStr = "hello world!" + UUID.randomUUID().toString();
+				MqttMessage message = new MqttMessage();
+				message.setPayload(mqttPayloadStr.getBytes());
+				mqttClient.publish("test", message);
+			}
+			mqttClient.disconnect();
+		} catch (MqttException e) {
+			e.printStackTrace();
+		} finally {
+			if (mqttClient != null) {
+				try {
+					mqttClient.disconnect();
+				} catch (MqttException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

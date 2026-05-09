@@ -17,6 +17,9 @@ public class PaymentFactory {
      * @return 支付服务实例
      */
     public static PaymentService getPaymentService(String payType) {
+        if (payType == null) {
+            throw new IllegalArgumentException("Payment type cannot be null");
+        }
         switch (payType.toUpperCase()) {
             case ALI_PAY:
                 return new AliPayService();
